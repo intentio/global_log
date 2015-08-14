@@ -1,0 +1,70 @@
+<!DOCTYPE html><html>
+      <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/><link rel="stylesheet" href="../static/bootstrap.min.css" type="text/css"/><link rel="stylesheet" href="../static/vis.min.css" type="text/css"/><link rel="stylesheet" href="../static/webui.css" type="text/css"/><link rel="stylesheet" href="../static/timeline-view.css" type="text/css"/><script src="../static/sorttable.js"></script><script src="../static/jquery-1.11.1.min.js"></script><script src="../static/vis.min.js"></script><script src="../static/bootstrap-tooltip.js"></script><script src="../static/initialize-tooltips.js"></script><script src="../static/table.js"></script><script src="../static/additional-metrics.js"></script><script src="../static/timeline-view.js"></script>
+        
+        <title>MemoryOnly - Environment</title>
+      </head>
+      <body>
+        <div class="navbar navbar-static-top">
+          <div class="navbar-inner">
+            <div class="brand">
+              <a href="../index.html" class="brand">
+                <img src="../static/spark-logo-77x50px-hd.png"/>
+                <span class="version">1.4.0</span>
+              </a>
+            </div>
+            <ul class="nav"><li class="">
+        <a href="../img/glyphicons-halflings-white.png">Jobs</a>
+      </li><li class="">
+        <a href="../stages/index.html">Stages</a>
+      </li><li class="">
+        <a href="../storage/index.html">Storage</a>
+      </li><li class="active">
+        <a href="index.html">Environment</a>
+      </li><li class="">
+        <a href="../executors/index.html">Executors</a>
+      </li></ul>
+            <p class="navbar-text pull-right">
+              <strong title="MemoryOnly">MemoryOnly</strong> application UI
+            </p>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row-fluid">
+            <div class="span12">
+              <h3 style="vertical-align: bottom; display: inline-block;">
+                Environment
+                
+              </h3>
+            </div>
+          </div>
+          <span>
+        <h4>Runtime Information</h4> <table class="table table-bordered table-condensed sortable table-striped">
+      <thead><th width="50.0%" class="">Name</th><th width="50.0%" class="">Value</th></thead>
+      <tbody>
+        <tr><td>Java Home</td><td>/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64/jre</td></tr><tr><td>Java Version</td><td>1.7.0_85 (Oracle Corporation)</td></tr><tr><td>Scala Version</td><td>version 2.10.4</td></tr>
+      </tbody>
+    </table>
+        <h4>Spark Properties</h4> <table class="table table-bordered table-condensed sortable table-striped">
+      <thead><th width="50.0%" class="">Name</th><th width="50.0%" class="">Value</th></thead>
+      <tbody>
+        <tr><td>spark.app.id</td><td>app-20150814014401-0002</td></tr><tr><td>spark.app.name</td><td>MemoryOnly</td></tr><tr><td>spark.driver.extraJavaOptions</td><td>-javaagent:/home/ec2-user/setting/btrace-bin-1.3/build/btrace-agent.jar=unsafe=true,scriptOutputFile=/home/ec2-user/out.trace,script=/home/ec2-user/DriverProbe.class</td></tr><tr><td>spark.driver.host</td><td>172.31.40.138</td></tr><tr><td>spark.driver.port</td><td>55944</td></tr><tr><td>spark.eventLog.dir</td><td>/home/ec2-user/eventlog</td></tr><tr><td>spark.eventLog.enabled</td><td>true</td></tr><tr><td>spark.executor.extraClassPath</td><td>/root/ephemeral-hdfs/conf</td></tr><tr><td>spark.executor.extraJavaOptions</td><td>-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:/home/ec2-user/gclog/spark.executor.gc.log -javaagent:/home/ec2-user/setting/btrace-bin-1.3/build/btrace-agent.jar=unsafe=true,scriptOutputFile=/home/ec2-user/out.trace,script=/home/ec2-user/ExecutorProbe.class</td></tr><tr><td>spark.executor.extraLibraryPath</td><td>/root/ephemeral-hdfs/lib/native/</td></tr><tr><td>spark.executor.id</td><td>driver</td></tr><tr><td>spark.executor.memory</td><td>1000m</td></tr><tr><td>spark.externalBlockStore.folderName</td><td>spark-28409bae-3074-4f8b-916e-dd3073548ea2</td></tr><tr><td>spark.fileserver.uri</td><td>http://172.31.40.138:41913</td></tr><tr><td>spark.jars</td><td>file:/home/ec2-user/sparkapp_2.11-0.1.jar</td></tr><tr><td>spark.master</td><td>spark://ec2-54-191-24-250.us-west-2.compute.amazonaws.com:7077</td></tr><tr><td>spark.scheduler.mode</td><td>FIFO</td></tr><tr><td>spark.shuffle.memoryFraction</td><td>0.01</td></tr><tr><td>spark.storage.memoryFraction</td><td>0.6</td></tr><tr><td>spark.storage.unrollFraction</td><td>0.2</td></tr>
+      </tbody>
+    </table>
+        <h4>System Properties</h4> <table class="table table-bordered table-condensed sortable table-striped">
+      <thead><th width="50.0%" class="">Name</th><th width="50.0%" class="">Value</th></thead>
+      <tbody>
+        <tr><td>SPARK_SUBMIT</td><td>true</td></tr><tr><td>awt.toolkit</td><td>sun.awt.X11.XToolkit</td></tr><tr><td>btrace.output</td><td>/home/ec2-user/out.trace</td></tr><tr><td>btrace.port</td><td>2020</td></tr><tr><td>file.encoding</td><td>UTF-8</td></tr><tr><td>file.encoding.pkg</td><td>sun.io</td></tr><tr><td>file.separator</td><td>/</td></tr><tr><td>java.awt.graphicsenv</td><td>sun.awt.X11GraphicsEnvironment</td></tr><tr><td>java.awt.printerjob</td><td>sun.print.PSPrinterJob</td></tr><tr><td>java.class.version</td><td>51.0</td></tr><tr><td>java.endorsed.dirs</td><td>/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64/jre/lib/endorsed</td></tr><tr><td>java.ext.dirs</td><td>/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64/jre/lib/ext:/usr/java/packages/lib/ext</td></tr><tr><td>java.home</td><td>/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64/jre</td></tr><tr><td>java.io.tmpdir</td><td>/tmp</td></tr><tr><td>java.library.path</td><td>/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib</td></tr><tr><td>java.runtime.name</td><td>OpenJDK Runtime Environment</td></tr><tr><td>java.runtime.version</td><td>1.7.0_85-mockbuild_2015_07_20_19_47-b00</td></tr><tr><td>java.specification.name</td><td>Java Platform API Specification</td></tr><tr><td>java.specification.vendor</td><td>Oracle Corporation</td></tr><tr><td>java.specification.version</td><td>1.7</td></tr><tr><td>java.vendor</td><td>Oracle Corporation</td></tr><tr><td>java.vendor.url</td><td>http://java.oracle.com/</td></tr><tr><td>java.vendor.url.bug</td><td>http://bugreport.sun.com/bugreport/</td></tr><tr><td>java.version</td><td>1.7.0_85</td></tr><tr><td>java.vm.info</td><td>mixed mode</td></tr><tr><td>java.vm.name</td><td>OpenJDK 64-Bit Server VM</td></tr><tr><td>java.vm.specification.name</td><td>Java Virtual Machine Specification</td></tr><tr><td>java.vm.specification.vendor</td><td>Oracle Corporation</td></tr><tr><td>java.vm.specification.version</td><td>1.7</td></tr><tr><td>java.vm.vendor</td><td>Oracle Corporation</td></tr><tr><td>java.vm.version</td><td>24.85-b03</td></tr><tr><td>line.separator</td><td>
+</td></tr><tr><td>os.arch</td><td>amd64</td></tr><tr><td>os.name</td><td>Linux</td></tr><tr><td>os.version</td><td>3.4.37-40.44.amzn1.x86_64</td></tr><tr><td>path.separator</td><td>:</td></tr><tr><td>sun.arch.data.model</td><td>64</td></tr><tr><td>sun.boot.class.path</td><td>/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64/jre/lib/resources.jar:/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64/jre/lib/rt.jar:/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64/jre/lib/sunrsasign.jar:/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64/jre/lib/jsse.jar:/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64/jre/lib/jce.jar:/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64/jre/lib/charsets.jar:/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64/jre/lib/rhino.jar:/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64/jre/lib/jfr.jar:/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64/jre/classes:/home/ec2-user/setting/btrace-bin-1.3/build/btrace-boot.jar</td></tr><tr><td>sun.boot.library.path</td><td>/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64/jre/lib/amd64</td></tr><tr><td>sun.cpu.endian</td><td>little</td></tr><tr><td>sun.cpu.isalist</td><td></td></tr><tr><td>sun.io.unicode.encoding</td><td>UnicodeLittle</td></tr><tr><td>sun.java.command</td><td>org.apache.spark.deploy.SparkSubmit --conf spark.driver.extraJavaOptions=-javaagent:/home/ec2-user/setting/btrace-bin-1.3/build/btrace-agent.jar=unsafe=true,scriptOutputFile=/home/ec2-user/out.trace,script=/home/ec2-user/DriverProbe.class --class MemoryOnly sparkapp_2.11-0.1.jar</td></tr><tr><td>sun.java.launcher</td><td>SUN_STANDARD</td></tr><tr><td>sun.jnu.encoding</td><td>UTF-8</td></tr><tr><td>sun.management.compiler</td><td>HotSpot 64-Bit Tiered Compilers</td></tr><tr><td>sun.nio.ch.bugLevel</td><td></td></tr><tr><td>sun.os.patch.level</td><td>unknown</td></tr><tr><td>user.country</td><td>US</td></tr><tr><td>user.dir</td><td>/home/ec2-user</td></tr><tr><td>user.home</td><td>/root</td></tr><tr><td>user.language</td><td>en</td></tr><tr><td>user.name</td><td>root</td></tr><tr><td>user.timezone</td><td>UTC</td></tr>
+      </tbody>
+    </table>
+        <h4>Classpath Entries</h4> <table class="table table-bordered table-condensed sortable table-striped">
+      <thead><th width="50.0%" class="">Resource</th><th width="50.0%" class="">Source</th></thead>
+      <tbody>
+        <tr><td>/home/ec2-user/setting/btrace-bin-1.3/build/btrace-agent.jar</td><td>System Classpath</td></tr><tr><td>/root/spark/conf/</td><td>System Classpath</td></tr><tr><td>/root/spark/lib/datanucleus-api-jdo-3.2.6.jar</td><td>System Classpath</td></tr><tr><td>/root/spark/lib/datanucleus-core-3.2.10.jar</td><td>System Classpath</td></tr><tr><td>/root/spark/lib/datanucleus-rdbms-3.2.9.jar</td><td>System Classpath</td></tr><tr><td>/root/spark/lib/spark-assembly-1.4.0-hadoop1.0.4.jar</td><td>System Classpath</td></tr><tr><td>http://172.31.40.138:41913/jars/sparkapp_2.11-0.1.jar</td><td>Added By User</td></tr>
+      </tbody>
+    </table>
+      </span>
+        </div>
+      </body>
+    </html>

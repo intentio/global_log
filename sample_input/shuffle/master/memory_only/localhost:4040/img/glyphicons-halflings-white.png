@@ -1,0 +1,169 @@
+<!DOCTYPE html><html>
+      <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/><link rel="stylesheet" href="../static/bootstrap.min.css" type="text/css"/><link rel="stylesheet" href="../static/vis.min.css" type="text/css"/><link rel="stylesheet" href="../static/webui.css" type="text/css"/><link rel="stylesheet" href="../static/timeline-view.css" type="text/css"/><script src="../static/sorttable.js"></script><script src="../static/jquery-1.11.1.min.js"></script><script src="../static/vis.min.js"></script><script src="../static/bootstrap-tooltip.js"></script><script src="../static/initialize-tooltips.js"></script><script src="../static/table.js"></script><script src="../static/additional-metrics.js"></script><script src="../static/timeline-view.js"></script>
+        
+        <title>MemoryOnly - Spark Jobs</title>
+      </head>
+      <body>
+        <div class="navbar navbar-static-top">
+          <div class="navbar-inner">
+            <div class="brand">
+              <a href="../index.html" class="brand">
+                <img src="../static/spark-logo-77x50px-hd.png"/>
+                <span class="version">1.4.0</span>
+              </a>
+            </div>
+            <ul class="nav"><li class="active">
+        <a href="glyphicons-halflings-white.png">Jobs</a>
+      </li><li class="">
+        <a href="../stages/index.html">Stages</a>
+      </li><li class="">
+        <a href="../storage/index.html">Storage</a>
+      </li><li class="">
+        <a href="../environment/index.html">Environment</a>
+      </li><li class="">
+        <a href="../executors/index.html">Executors</a>
+      </li></ul>
+            <p class="navbar-text pull-right">
+              <strong title="MemoryOnly">MemoryOnly</strong> application UI
+            </p>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row-fluid">
+            <div class="span12">
+              <h3 style="vertical-align: bottom; display: inline-block;">
+                Spark Jobs
+                <sup>
+      (<a data-toggle="tooltip" data-placement="bottom" title="A job is triggered by an action, like count() or saveAsTextFile(). Click on a job to see information about the stages of tasks inside it.">?</a>)
+    </sup>
+              </h3>
+            </div>
+          </div>
+          <div>
+          <ul class="unstyled">
+            <li>
+                <strong>Total Uptime: </strong>
+                2.0 min
+              </li>
+            <li>
+              <strong>Scheduling Mode: </strong>
+              FIFO
+            </li>
+            
+            <li id="completed-summary">
+                  <a href="glyphicons-halflings-white.png#completed"><strong>Completed Jobs:</strong></a>
+                  1
+                </li>
+            
+          </ul>
+        </div><span class="expand-application-timeline">
+      <span class="expand-application-timeline-arrow arrow-closed"></span>
+      <a data-toggle="tooltip" title="Shows when jobs started and ended and when executors joined or left. Drag to scroll.
+       Click Enable Zooming and use mouse wheel to zoom in/out." data-placement="right">
+        Event Timeline
+      </a>
+    </span><div id="application-timeline" class="collapsed">
+      <div class="control-panel">
+        <div id="application-timeline-zoom-lock">
+          <input type="checkbox"></input>
+          <span>Enable zooming</span>
+        </div>
+      </div>
+    </div><script type="text/javascript">
+      drawApplicationTimeline(
+[
+  {
+    'id': 'executors',
+    'content': '<div>Executors</div><div class="legend-area"><svg width="150px" height="55px">      <rect class="executor-added-legend" x="5px" y="5px" width="20px" height="15px" rx="2px" ry="2px"></rect>      <text x="35px" y="17px">Added</text>      <rect class="executor-removed-legend" x="5px" y="30px" width="20px" height="15px" rx="2px" ry="2px"></rect>      <text x="35px" y="42px">Removed</text>    </svg></div>',
+  },
+  {
+    'id': 'jobs',
+    'content': '<div>Jobs</div><div class="legend-area"><svg width="150px" height="85px">      <rect class="succeeded-job-legend" x="5px" y="5px" width="20px" height="15px" rx="2px" ry="2px"></rect>      <text x="35px" y="17px">Succeeded</text>      <rect class="failed-job-legend" x="5px" y="30px" width="20px" height="15px" rx="2px" ry="2px"></rect>      <text x="35px" y="42px">Failed</text>      <rect class="running-job-legend" x="5px" y="55px" width="20px" height="15px" rx="2px" ry="2px"></rect>      <text x="35px" y="67px">Running</text>    </svg></div>',
+  }
+]
+        ,[
+{
+  'className': 'job application-timeline-object succeeded',
+  'group': 'jobs',
+  'start': new Date(1439516645323),
+  'end': new Date(1439516756299),
+  'content': '<div class="application-timeline-content"' +
+     'data-html="true" data-placement="top" data-toggle="tooltip"' +
+     'data-title="saveAsTextFile at Func.scala:72 (Job 0)<br>' +
+     'Status: SUCCEEDED<br>' +
+     'Submitted: 2015/08/14 01:44:05' +
+     '<br>Completed: 2015/08/14 01:45:56">' +
+    'saveAsTextFile at Func.scala:72 (Job 0)</div>'
+}
+         ,
+{
+  'className': 'executor added',
+  'group': 'executors',
+  'start': new Date(1439516645745),
+  'content': '<div class="executor-event-content"' +
+    'data-toggle="tooltip" data-placement="bottom"' +
+    'data-title="Executor 2<br>' +
+    'Added at 2015/08/14 01:44:05"' +
+    'data-html="true">Executor 2 added</div>'
+}
+           ,
+{
+  'className': 'executor added',
+  'group': 'executors',
+  'start': new Date(1439516645684),
+  'content': '<div class="executor-event-content"' +
+    'data-toggle="tooltip" data-placement="bottom"' +
+    'data-title="Executor 1<br>' +
+    'Added at 2015/08/14 01:44:05"' +
+    'data-html="true">Executor 1 added</div>'
+}
+           ,
+{
+  'className': 'executor added',
+  'group': 'executors',
+  'start': new Date(1439516645728),
+  'content': '<div class="executor-event-content"' +
+    'data-toggle="tooltip" data-placement="bottom"' +
+    'data-title="Executor 0<br>' +
+    'Added at 2015/08/14 01:44:05"' +
+    'data-html="true">Executor 0 added</div>'
+}
+           ], 1439516638315);
+    </script><h4 id="completed">Completed Jobs (1)</h4><table class="table table-bordered table-striped table-condensed sortable">
+      <thead><th>Job Id</th><th>Description</th><th>Submitted</th><th>Duration</th><th class="sorttable_nosort">Stages: Succeeded/Total</th><th class="sorttable_nosort">Tasks (for all stages): Succeeded/Total</th></thead>
+      <tbody>
+        <tr id="job-0">
+        <td sorttable_customkey="0">
+          0 
+        </td>
+        <td>
+          <span class="description-input" title=""></span>
+          <a href="../jobs/job?id=0" class="name-link">saveAsTextFile at Func.scala:72</a>
+        </td>
+        <td sorttable_customkey="1439516645323">
+          2015/08/14 01:44:05
+        </td>
+        <td sorttable_customkey="110976">1.8 min</td>
+        <td class="stage-progress-cell">
+          3/3
+          
+          
+        </td>
+        <td class="progress-cell">
+          <div class="progress">
+      <span style="text-align:center; position:absolute; width:100%; left:0;">
+        22/22
+        
+        
+      </span>
+      <div class="bar bar-completed" style="width: 100.0%"></div>
+      <div class="bar bar-running" style="width: 0.0%"></div>
+    </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+        </div>
+      </body>
+    </html>

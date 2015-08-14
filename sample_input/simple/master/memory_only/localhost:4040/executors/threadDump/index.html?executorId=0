@@ -1,0 +1,708 @@
+<!DOCTYPE html><html>
+      <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/><link rel="stylesheet" href="../../static/bootstrap.min.css" type="text/css"/><link rel="stylesheet" href="../../static/vis.min.css" type="text/css"/><link rel="stylesheet" href="../../static/webui.css" type="text/css"/><link rel="stylesheet" href="../../static/timeline-view.css" type="text/css"/><script src="../../static/sorttable.js"></script><script src="../../static/jquery-1.11.1.min.js"></script><script src="../../static/vis.min.js"></script><script src="../../static/bootstrap-tooltip.js"></script><script src="../../static/initialize-tooltips.js"></script><script src="../../static/table.js"></script><script src="../../static/additional-metrics.js"></script><script src="../../static/timeline-view.js"></script>
+        
+        <title>MemoryOnly - Thread dump for executor 0</title>
+      </head>
+      <body>
+        <div class="navbar navbar-static-top">
+          <div class="navbar-inner">
+            <div class="brand">
+              <a href="../../index.html" class="brand">
+                <img src="../../static/spark-logo-77x50px-hd.png"/>
+                <span class="version">1.4.0</span>
+              </a>
+            </div>
+            <ul class="nav"><li class="">
+        <a href="../../img/glyphicons-halflings-white.png">Jobs</a>
+      </li><li class="">
+        <a href="../../stages/index.html">Stages</a>
+      </li><li class="">
+        <a href="../../storage/index.html">Storage</a>
+      </li><li class="">
+        <a href="../../environment/index.html">Environment</a>
+      </li><li class="active">
+        <a href="../index.html">Executors</a>
+      </li></ul>
+            <p class="navbar-text pull-right">
+              <strong title="MemoryOnly">MemoryOnly</strong> application UI
+            </p>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row-fluid">
+            <div class="span12">
+              <h3 style="vertical-align: bottom; display: inline-block;">
+                Thread dump for executor 0
+                
+              </h3>
+            </div>
+          </div>
+          <div class="row-fluid">
+        <p>Updated at 2015/08/02 07:49:31</p>
+        <p><a class="expandbutton" onClick="$('.accordion-body').removeClass('hidden'); $('.expandbutton').toggleClass('hidden')">
+            Expand All
+          </a></p><p><a class="expandbutton hidden" onClick="$('.accordion-body').addClass('hidden'); $('.expandbutton').toggleClass('hidden')">
+            Collapse All
+          </a></p>
+        <div class="accordion"><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 1: main (WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.misc.Unsafe.park(Native Method)
+java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)
+java.util.concurrent.locks.AbstractQueuedSynchronizer.parkAndCheckInterrupt(AbstractQueuedSynchronizer.java:834)
+java.util.concurrent.locks.AbstractQueuedSynchronizer.doAcquireSharedInterruptibly(AbstractQueuedSynchronizer.java:994)
+java.util.concurrent.locks.AbstractQueuedSynchronizer.acquireSharedInterruptibly(AbstractQueuedSynchronizer.java:1303)
+java.util.concurrent.CountDownLatch.await(CountDownLatch.java:236)
+akka.actor.ActorSystemImpl$TerminationCallbacks.ready(ActorSystem.scala:817)
+akka.actor.ActorSystemImpl$TerminationCallbacks.ready(ActorSystem.scala:786)
+scala.concurrent.Await$$anonfun$ready$1.apply(package.scala:86)
+scala.concurrent.Await$$anonfun$ready$1.apply(package.scala:86)
+scala.concurrent.BlockContext$DefaultBlockContext$.blockOn(BlockContext.scala:53)
+scala.concurrent.Await$.ready(package.scala:86)
+akka.actor.ActorSystemImpl.awaitTermination(ActorSystem.scala:642)
+akka.actor.ActorSystemImpl.awaitTermination(ActorSystem.scala:643)
+org.apache.spark.rpc.akka.AkkaRpcEnv.awaitTermination(AkkaRpcEnv.scala:236)
+org.apache.spark.executor.CoarseGrainedExecutorBackend$$anonfun$run$1.apply$mcV$sp(CoarseGrainedExecutorBackend.scala:194)
+org.apache.spark.deploy.SparkHadoopUtil$$anon$1.run(SparkHadoopUtil.scala:66)
+org.apache.spark.deploy.SparkHadoopUtil$$anon$1.run(SparkHadoopUtil.scala:65)
+java.security.AccessController.doPrivileged(Native Method)
+javax.security.auth.Subject.doAs(Subject.java:415)
+org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1121)
+org.apache.spark.deploy.SparkHadoopUtil.runAsSparkUser(SparkHadoopUtil.scala:65)
+org.apache.spark.executor.CoarseGrainedExecutorBackend$.run(CoarseGrainedExecutorBackend.scala:146)
+org.apache.spark.executor.CoarseGrainedExecutorBackend$.main(CoarseGrainedExecutorBackend.scala:245)
+org.apache.spark.executor.CoarseGrainedExecutorBackend.main(CoarseGrainedExecutorBackend.scala)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 2: Reference Handler (WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>java.lang.Object.wait(Native Method)
+java.lang.Object.wait(Object.java:503)
+java.lang.ref.Reference$ReferenceHandler.run(Reference.java:133)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 3: Finalizer (WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>java.lang.Object.wait(Native Method)
+java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:135)
+java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:151)
+java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:209)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 4: Signal Dispatcher (RUNNABLE)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre></pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 5: Thread-0 (WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.misc.Unsafe.park(Native Method)
+java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)
+java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)
+java.util.concurrent.ArrayBlockingQueue.take(ArrayBlockingQueue.java:374)
+com.sun.btrace.BTraceRuntime$2.run(BTraceRuntime.java:379)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 6: Timer-0 (TIMED_WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>java.lang.Object.wait(Native Method)
+java.util.TimerThread.mainLoop(Timer.java:552)
+java.util.TimerThread.run(Timer.java:505)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 7: BTrace FileClient Flusher (TIMED_WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>java.lang.Object.wait(Native Method)
+java.util.TimerThread.mainLoop(Timer.java:552)
+java.util.TimerThread.run(Timer.java:505)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 8: pool-1-thread-1 (WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.misc.Unsafe.park(Native Method)
+java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)
+java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)
+java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
+java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1068)
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 9: Thread-3 (RUNNABLE)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>java.net.PlainSocketImpl.socketAccept(Native Method)
+java.net.AbstractPlainSocketImpl.accept(AbstractPlainSocketImpl.java:398)
+java.net.ServerSocket.implAccept(ServerSocket.java:530)
+java.net.ServerSocket.accept(ServerSocket.java:498)
+com.sun.btrace.agent.Main.startServer(Main.java:403)
+com.sun.btrace.agent.Main.access$000(Main.java:65)
+com.sun.btrace.agent.Main$3.run(Main.java:168)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 29: sparkExecutor-scheduler-1 (TIMED_WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>java.lang.Thread.sleep(Native Method)
+akka.actor.LightArrayRevolverScheduler.waitNanos(Scheduler.scala:226)
+akka.actor.LightArrayRevolverScheduler$$anon$8.nextTick(Scheduler.scala:405)
+akka.actor.LightArrayRevolverScheduler$$anon$8.run(Scheduler.scala:375)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 32: sparkExecutor-akka.actor.default-dispatcher-4 (WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.misc.Unsafe.park(Native Method)
+scala.concurrent.forkjoin.ForkJoinPool.scan(ForkJoinPool.java:2075)
+scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)
+scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 34: sparkExecutor-akka.actor.default-dispatcher-6 (RUNNABLE)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.management.ThreadImpl.dumpThreads0(Native Method)
+sun.management.ThreadImpl.dumpAllThreads(ThreadImpl.java:446)
+org.apache.spark.util.Utils$.getThreadDump(Utils.scala:1931)
+org.apache.spark.executor.ExecutorEndpoint$$anonfun$receiveAndReply$1.applyOrElse(ExecutorEndpoint.scala:36)
+org.apache.spark.rpc.akka.AkkaRpcEnv.org$apache$spark$rpc$akka$AkkaRpcEnv$$processMessage(AkkaRpcEnv.scala:178)
+org.apache.spark.rpc.akka.AkkaRpcEnv$$anonfun$actorRef$lzycompute$1$1$$anon$1$$anonfun$receiveWithLogging$1$$anonfun$applyOrElse$4.apply$mcV$sp(AkkaRpcEnv.scala:127)
+org.apache.spark.rpc.akka.AkkaRpcEnv.org$apache$spark$rpc$akka$AkkaRpcEnv$$safelyCall(AkkaRpcEnv.scala:198)
+org.apache.spark.rpc.akka.AkkaRpcEnv$$anonfun$actorRef$lzycompute$1$1$$anon$1$$anonfun$receiveWithLogging$1.applyOrElse(AkkaRpcEnv.scala:126)
+scala.runtime.AbstractPartialFunction$mcVL$sp.apply$mcVL$sp(AbstractPartialFunction.scala:33)
+scala.runtime.AbstractPartialFunction$mcVL$sp.apply(AbstractPartialFunction.scala:33)
+scala.runtime.AbstractPartialFunction$mcVL$sp.apply(AbstractPartialFunction.scala:25)
+org.apache.spark.util.ActorLogReceive$$anon$1.apply(ActorLogReceive.scala:59)
+org.apache.spark.util.ActorLogReceive$$anon$1.apply(ActorLogReceive.scala:42)
+scala.PartialFunction$class.applyOrElse(PartialFunction.scala:118)
+org.apache.spark.util.ActorLogReceive$$anon$1.applyOrElse(ActorLogReceive.scala:42)
+akka.actor.Actor$class.aroundReceive(Actor.scala:465)
+org.apache.spark.rpc.akka.AkkaRpcEnv$$anonfun$actorRef$lzycompute$1$1$$anon$1.aroundReceive(AkkaRpcEnv.scala:93)
+akka.actor.ActorCell.receiveMessage(ActorCell.scala:516)
+akka.actor.ActorCell.invoke(ActorCell.scala:487)
+akka.dispatch.Mailbox.processMailbox(Mailbox.scala:238)
+akka.dispatch.Mailbox.run(Mailbox.scala:220)
+akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:393)
+scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260)
+scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339)
+scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)
+scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 35: sparkExecutor-akka.remote.default-remote-dispatcher-7 (WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.misc.Unsafe.park(Native Method)
+scala.concurrent.forkjoin.ForkJoinPool.scan(ForkJoinPool.java:2075)
+scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)
+scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 37: ForkJoinPool-3-worker-3 (WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.misc.Unsafe.park(Native Method)
+scala.concurrent.forkjoin.ForkJoinPool.scan(ForkJoinPool.java:2075)
+scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)
+scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 38: sparkExecutor-akka.remote.default-remote-dispatcher-9 (TIMED_WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.misc.Unsafe.park(Native Method)
+scala.concurrent.forkjoin.ForkJoinPool.idleAwaitWork(ForkJoinPool.java:2135)
+scala.concurrent.forkjoin.ForkJoinPool.scan(ForkJoinPool.java:2067)
+scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)
+scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 40: New I/O worker #7 (RUNNABLE)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:79)
+sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:87)
+sun.nio.ch.SelectorImpl.select(SelectorImpl.java:98)
+org.jboss.netty.channel.socket.nio.SelectorUtil.select(SelectorUtil.java:68)
+org.jboss.netty.channel.socket.nio.AbstractNioSelector.select(AbstractNioSelector.java:415)
+org.jboss.netty.channel.socket.nio.AbstractNioSelector.run(AbstractNioSelector.java:212)
+org.jboss.netty.channel.socket.nio.AbstractNioWorker.run(AbstractNioWorker.java:89)
+org.jboss.netty.channel.socket.nio.NioWorker.run(NioWorker.java:178)
+org.jboss.netty.util.ThreadRenamingRunnable.run(ThreadRenamingRunnable.java:108)
+org.jboss.netty.util.internal.DeadLockProofWorker$1.run(DeadLockProofWorker.java:42)
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 41: New I/O worker #8 (RUNNABLE)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:79)
+sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:87)
+sun.nio.ch.SelectorImpl.select(SelectorImpl.java:98)
+org.jboss.netty.channel.socket.nio.SelectorUtil.select(SelectorUtil.java:68)
+org.jboss.netty.channel.socket.nio.AbstractNioSelector.select(AbstractNioSelector.java:415)
+org.jboss.netty.channel.socket.nio.AbstractNioSelector.run(AbstractNioSelector.java:212)
+org.jboss.netty.channel.socket.nio.AbstractNioWorker.run(AbstractNioWorker.java:89)
+org.jboss.netty.channel.socket.nio.NioWorker.run(NioWorker.java:178)
+org.jboss.netty.util.ThreadRenamingRunnable.run(ThreadRenamingRunnable.java:108)
+org.jboss.netty.util.internal.DeadLockProofWorker$1.run(DeadLockProofWorker.java:42)
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 42: Hashed wheel timer #2 (TIMED_WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>java.lang.Thread.sleep(Native Method)
+org.jboss.netty.util.HashedWheelTimer$Worker.waitForNextTick(HashedWheelTimer.java:483)
+org.jboss.netty.util.HashedWheelTimer$Worker.run(HashedWheelTimer.java:392)
+org.jboss.netty.util.ThreadRenamingRunnable.run(ThreadRenamingRunnable.java:108)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 43: New I/O boss #9 (RUNNABLE)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:79)
+sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:87)
+sun.nio.ch.SelectorImpl.select(SelectorImpl.java:98)
+org.jboss.netty.channel.socket.nio.SelectorUtil.select(SelectorUtil.java:68)
+org.jboss.netty.channel.socket.nio.AbstractNioSelector.select(AbstractNioSelector.java:415)
+org.jboss.netty.channel.socket.nio.AbstractNioSelector.run(AbstractNioSelector.java:212)
+org.jboss.netty.channel.socket.nio.NioClientBoss.run(NioClientBoss.java:42)
+org.jboss.netty.util.ThreadRenamingRunnable.run(ThreadRenamingRunnable.java:108)
+org.jboss.netty.util.internal.DeadLockProofWorker$1.run(DeadLockProofWorker.java:42)
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 44: New I/O worker #10 (RUNNABLE)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:79)
+sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:87)
+sun.nio.ch.SelectorImpl.select(SelectorImpl.java:98)
+org.jboss.netty.channel.socket.nio.SelectorUtil.select(SelectorUtil.java:68)
+org.jboss.netty.channel.socket.nio.AbstractNioSelector.select(AbstractNioSelector.java:415)
+org.jboss.netty.channel.socket.nio.AbstractNioSelector.run(AbstractNioSelector.java:212)
+org.jboss.netty.channel.socket.nio.AbstractNioWorker.run(AbstractNioWorker.java:89)
+org.jboss.netty.channel.socket.nio.NioWorker.run(NioWorker.java:178)
+org.jboss.netty.util.ThreadRenamingRunnable.run(ThreadRenamingRunnable.java:108)
+org.jboss.netty.util.internal.DeadLockProofWorker$1.run(DeadLockProofWorker.java:42)
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 45: New I/O worker #11 (RUNNABLE)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:79)
+sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:87)
+sun.nio.ch.SelectorImpl.select(SelectorImpl.java:98)
+org.jboss.netty.channel.socket.nio.SelectorUtil.select(SelectorUtil.java:68)
+org.jboss.netty.channel.socket.nio.AbstractNioSelector.select(AbstractNioSelector.java:415)
+org.jboss.netty.channel.socket.nio.AbstractNioSelector.run(AbstractNioSelector.java:212)
+org.jboss.netty.channel.socket.nio.AbstractNioWorker.run(AbstractNioWorker.java:89)
+org.jboss.netty.channel.socket.nio.NioWorker.run(NioWorker.java:178)
+org.jboss.netty.util.ThreadRenamingRunnable.run(ThreadRenamingRunnable.java:108)
+org.jboss.netty.util.internal.DeadLockProofWorker$1.run(DeadLockProofWorker.java:42)
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 46: New I/O server boss #12 (RUNNABLE)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:79)
+sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:87)
+sun.nio.ch.SelectorImpl.select(SelectorImpl.java:98)
+sun.nio.ch.SelectorImpl.select(SelectorImpl.java:102)
+org.jboss.netty.channel.socket.nio.NioServerBoss.select(NioServerBoss.java:163)
+org.jboss.netty.channel.socket.nio.AbstractNioSelector.run(AbstractNioSelector.java:212)
+org.jboss.netty.channel.socket.nio.NioServerBoss.run(NioServerBoss.java:42)
+org.jboss.netty.util.ThreadRenamingRunnable.run(ThreadRenamingRunnable.java:108)
+org.jboss.netty.util.internal.DeadLockProofWorker$1.run(DeadLockProofWorker.java:42)
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 47: BLOCK_MANAGER cleanup timer (WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>java.lang.Object.wait(Native Method)
+java.lang.Object.wait(Object.java:503)
+java.util.TimerThread.mainLoop(Timer.java:526)
+java.util.TimerThread.run(Timer.java:505)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 48: BROADCAST_VARS cleanup timer (WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>java.lang.Object.wait(Native Method)
+java.lang.Object.wait(Object.java:503)
+java.util.TimerThread.mainLoop(Timer.java:526)
+java.util.TimerThread.run(Timer.java:505)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 49: process reaper (TIMED_WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.misc.Unsafe.park(Native Method)
+java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:226)
+java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(SynchronousQueue.java:460)
+java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:359)
+java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:942)
+java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1068)
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 50: shuffle-client-0 (RUNNABLE)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:79)
+sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:87)
+sun.nio.ch.SelectorImpl.select(SelectorImpl.java:98)
+io.netty.channel.nio.NioEventLoop.select(NioEventLoop.java:622)
+io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:310)
+io.netty.util.concurrent.SingleThreadEventExecutor$2.run(SingleThreadEventExecutor.java:116)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 51: shuffle-client-1 (RUNNABLE)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:79)
+sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:87)
+sun.nio.ch.SelectorImpl.select(SelectorImpl.java:98)
+io.netty.channel.nio.NioEventLoop.select(NioEventLoop.java:622)
+io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:310)
+io.netty.util.concurrent.SingleThreadEventExecutor$2.run(SingleThreadEventExecutor.java:116)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 52: shuffle-server-0 (RUNNABLE)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:79)
+sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:87)
+sun.nio.ch.SelectorImpl.select(SelectorImpl.java:98)
+io.netty.channel.nio.NioEventLoop.select(NioEventLoop.java:622)
+io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:310)
+io.netty.util.concurrent.SingleThreadEventExecutor$2.run(SingleThreadEventExecutor.java:116)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 53: shuffle-server-1 (RUNNABLE)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:79)
+sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:87)
+sun.nio.ch.SelectorImpl.select(SelectorImpl.java:98)
+io.netty.channel.nio.NioEventLoop.select(NioEventLoop.java:622)
+io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:310)
+io.netty.util.concurrent.SingleThreadEventExecutor$2.run(SingleThreadEventExecutor.java:116)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 55: driver-heartbeater (TIMED_WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.misc.Unsafe.park(Native Method)
+java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:226)
+java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2082)
+java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1090)
+java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:807)
+java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1068)
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 56: Executor task launch worker-0 (TIMED_WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.misc.Unsafe.park(Native Method)
+java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:226)
+java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(SynchronousQueue.java:460)
+java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:359)
+java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:942)
+java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1068)
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 57: Executor task launch worker-1 (TIMED_WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>sun.misc.Unsafe.park(Native Method)
+java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:226)
+java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(SynchronousQueue.java:460)
+java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:359)
+java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:942)
+java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1068)
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 60: threadDeathWatcher-2-1 (TIMED_WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>java.lang.Thread.sleep(Native Method)
+io.netty.util.ThreadDeathWatcher$Watcher.run(ThreadDeathWatcher.java:137)
+io.netty.util.concurrent.DefaultThreadFactory$DefaultRunnableDecorator.run(DefaultThreadFactory.java:137)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 63: MultiThreadedHttpConnectionManager cleanup (WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>java.lang.Object.wait(Native Method)
+java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:135)
+java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:151)
+org.apache.commons.httpclient.MultiThreadedHttpConnectionManager$ReferenceQueueThread.run(MultiThreadedHttpConnectionManager.java:1122)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 64: IPC Client (47) connection to ec2-52-26-90-45.us-west-2.compute.amazonaws.com/172.31.30.133:9000 from root (TIMED_WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>java.lang.Object.wait(Native Method)
+org.apache.hadoop.ipc.Client$Connection.waitForWork(Client.java:706)
+org.apache.hadoop.ipc.Client$Connection.run(Client.java:748)</pre>
+            </div>
+          </div>
+        </div><div class="accordion-group">
+          <div class="accordion-heading" onclick="$(this).next().toggleClass('hidden')">
+            <a class="accordion-toggle">
+              Thread 67: LeaseChecker (TIMED_WAITING)
+            </a>
+          </div>
+          <div class="accordion-body hidden">
+            <div class="accordion-inner">
+              <pre>java.lang.Thread.sleep(Native Method)
+org.apache.hadoop.hdfs.DFSClient$LeaseChecker.run(DFSClient.java:1379)
+java.lang.Thread.run(Thread.java:745)</pre>
+            </div>
+          </div>
+        </div></div>
+      </div>
+        </div>
+      </body>
+    </html>

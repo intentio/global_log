@@ -1,0 +1,1152 @@
+<!DOCTYPE html><html>
+      <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/><link rel="stylesheet" href="../static/bootstrap.min.css" type="text/css"/><link rel="stylesheet" href="../static/vis.min.css" type="text/css"/><link rel="stylesheet" href="../static/webui.css" type="text/css"/><link rel="stylesheet" href="../static/timeline-view.css" type="text/css"/><script src="../static/sorttable.js"></script><script src="../static/jquery-1.11.1.min.js"></script><script src="../static/vis.min.js"></script><script src="../static/bootstrap-tooltip.js"></script><script src="../static/initialize-tooltips.js"></script><script src="../static/table.js"></script><script src="../static/additional-metrics.js"></script><script src="../static/timeline-view.js"></script>
+        <link rel="stylesheet" href="../static/spark-dag-viz.css" type="text/css"/><script src="../static/d3.min.js"></script><script src="../static/dagre-d3.min.js"></script><script src="../static/graphlib-dot.min.js"></script><script src="../static/spark-dag-viz.js"></script>
+        <title>MemoryOnly - Details for Stage 1 (Attempt 0)</title>
+      </head>
+      <body>
+        <div class="navbar navbar-static-top">
+          <div class="navbar-inner">
+            <div class="brand">
+              <a href="../index.html" class="brand">
+                <img src="../static/spark-logo-77x50px-hd.png"/>
+                <span class="version">1.4.0</span>
+              </a>
+            </div>
+            <ul class="nav"><li class="">
+        <a href="../img/glyphicons-halflings-white.png">Jobs</a>
+      </li><li class="active">
+        <a href="index.html">Stages</a>
+      </li><li class="">
+        <a href="../storage/index.html">Storage</a>
+      </li><li class="">
+        <a href="../environment/index.html">Environment</a>
+      </li><li class="">
+        <a href="../executors/index.html">Executors</a>
+      </li></ul>
+            <p class="navbar-text pull-right">
+              <strong title="MemoryOnly">MemoryOnly</strong> application UI
+            </p>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row-fluid">
+            <div class="span12">
+              <h3 style="vertical-align: bottom; display: inline-block;">
+                Details for Stage 1 (Attempt 0)
+                
+              </h3>
+            </div>
+          </div>
+          <div>
+          <ul class="unstyled">
+            <li>
+              <strong>Total Time Across All Tasks: </strong>
+              4.1 min
+            </li>
+            
+            
+            <li>
+                <strong>Shuffle Read: </strong>
+                223.0 MB / 20000000
+              </li>
+            <li>
+                <strong>Shuffle Write: </strong>
+                 120.8 MB / 18239757
+              </li>
+            <li>
+                <strong>Shuffle Spill (Memory): </strong>
+                1750.1 MB
+              </li><li>
+                <strong>Shuffle Spill (Disk): </strong>
+                119.8 MB
+              </li>
+          </ul>
+        </div><div>
+      <span class="expand-dag-viz" onclick="toggleDagViz(false);">
+        <span class="expand-dag-viz-arrow arrow-closed"></span>
+        <a data-toggle="tooltip" title="Shows a graph of RDD operations in this stage, and RDDs inside each one. A stage can run
+       multiple operations (e.g. two map() functions) if they can be pipelined. Some operations
+       also create multiple RDDs internally. Cached RDDs are shown in green.
+    " data-placement="right">
+          DAG Visualization
+        </a>
+      </span>
+      <div id="dag-viz-graph"></div>
+      <div id="dag-viz-metadata" style="display:none">
+        <div class="stage-metadata" stage-id="1" skipped="false">
+              <div class="dot-file">digraph G {
+  subgraph clusterstage_1 {
+    label=&quot;Stage 1&quot;;
+    subgraph cluster2 {
+      label=&quot;map&quot;;
+      6 [label=&quot;MapPartitionsRDD [6]&quot;];
+    }
+    subgraph cluster1 {
+      label=&quot;repartition&quot;;
+      4 [label=&quot;CoalescedRDD [4]&quot;];
+      3 [label=&quot;ShuffledRDD [3]&quot;];
+      5 [label=&quot;MapPartitionsRDD [5]&quot;];
+    }
+    subgraph cluster1 {
+      label=&quot;repartition&quot;;
+      4 [label=&quot;CoalescedRDD [4]&quot;];
+      3 [label=&quot;ShuffledRDD [3]&quot;];
+      5 [label=&quot;MapPartitionsRDD [5]&quot;];
+    }
+    subgraph cluster1 {
+      label=&quot;repartition&quot;;
+      4 [label=&quot;CoalescedRDD [4]&quot;];
+      3 [label=&quot;ShuffledRDD [3]&quot;];
+      5 [label=&quot;MapPartitionsRDD [5]&quot;];
+    }
+  }
+  5-&gt;6;
+  3-&gt;4;
+  4-&gt;5;
+}</div>
+              <div class="incoming-edge">2,3</div>
+              
+              <div class="cached-rdd">6</div>
+            </div>
+      </div>
+    </div><div>
+          <span class="expand-additional-metrics">
+            <span class="expand-additional-metrics-arrow arrow-closed"></span>
+            <a>Show Additional Metrics</a>
+          </span>
+          <div class="additional-metrics collapsed">
+            <ul>
+              <li>
+                  <input type="checkbox" id="select-all-metrics"/>
+                  <span class="additional-metric-title"><em>(De)select All</em></span>
+              </li>
+              <li>
+                <span data-toggle="tooltip" title="Scheduler delay includes time to ship the task from the scheduler to
+       the executor, and time to send the task result from the executor to the scheduler. If
+       scheduler delay is large, consider decreasing the size of tasks or decreasing the size
+       of task results." data-placement="right">
+                  <input type="checkbox" name="scheduler_delay"/>
+                  <span class="additional-metric-title">Scheduler Delay</span>
+                </span>
+              </li>
+              <li>
+                <span data-toggle="tooltip" title="Time spent deserializing the task closure on the executor, including the time to read the
+       broadcasted task." data-placement="right">
+                  <input type="checkbox" name="deserialization_time"/>
+                  <span class="additional-metric-title">Task Deserialization Time</span>
+                </span>
+              </li>
+              <li>
+                  <span data-toggle="tooltip" title="Time that the task spent blocked waiting for shuffle data to be read from remote machines." data-placement="right">
+                    <input type="checkbox" name="fetch_wait_time"/>
+                    <span class="additional-metric-title">Shuffle Read Blocked Time</span>
+                  </span>
+                </li><li>
+                  <span data-toggle="tooltip" title="Total shuffle bytes read from remote executors. This is a subset of the shuffle
+       read bytes; the remaining shuffle data is read locally. " data-placement="right">
+                    <input type="checkbox" name="shuffle_read_remote"/>
+                    <span class="additional-metric-title">Shuffle Remote Reads</span>
+                  </span>
+                </li>
+              <li>
+                <span data-toggle="tooltip" title="Time spent serializing the task result on the executor before sending it back to the
+       driver." data-placement="right">
+                  <input type="checkbox" name="serialization_time"/>
+                  <span class="additional-metric-title">Result Serialization Time</span>
+                </span>
+              </li>
+              <li>
+                <span data-toggle="tooltip" title="Time that the driver spends fetching task results from workers. If this is large, consider
+       decreasing the amount of data returned from each task." data-placement="right">
+                  <input type="checkbox" name="getting_result_time"/>
+                  <span class="additional-metric-title">Getting Result Time</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div><span class="expand-task-assignment-timeline">
+      <span class="expand-task-assignment-timeline-arrow arrow-closed"></span>
+      <a>Event Timeline</a>
+    </span><div id="task-assignment-timeline" class="collapsed">
+      
+      <div class="control-panel">
+        <div id="task-assignment-timeline-zoom-lock">
+          <input type="checkbox"></input>
+          <span>Enable zooming</span>
+        </div>
+      </div>
+      <div class="legend-area">
+      <svg>
+        <rect x="5px" y="10px" width="10px" height="10px" class="scheduler-delay-proportion"></rect><text x="25px" y="20px">Scheduler Delay</text><rect x="5px" y="25px" width="10px" height="10px" class="deserialization-time-proportion"></rect><text x="25px" y="35px">Task Deserialization Time</text><rect x="5px" y="40px" width="10px" height="10px" class="shuffle-read-time-proportion"></rect><text x="25px" y="50px">Shuffle Read Time</text><rect x="215px" y="10px" width="10px" height="10px" class="executor-runtime-proportion"></rect><text x="235px" y="20px">Executor Computing Time</text><rect x="215px" y="25px" width="10px" height="10px" class="shuffle-write-time-proportion"></rect><text x="235px" y="35px">Shuffle Write Time</text><rect x="215px" y="40px" width="10px" height="10px" class="serialization-time-proportion"></rect><text x="235px" y="50px">Result Serialization TIme</text><rect x="425px" y="10px" width="10px" height="10px" class="getting-result-time-proportion"></rect><text x="445px" y="20px">Getting Result Time</text>
+      </svg>
+    </div>
+    </div><script type="text/javascript">
+      drawTaskAssignmentTimeline([
+            {
+              'id': '0',
+              'content': '0 / 172.31.39.56',
+            }
+          ,
+            {
+              'id': '1',
+              'content': '1 / 172.31.39.57',
+            }
+          ,
+            {
+              'id': '2',
+              'content': '2 / 172.31.39.58',
+            }
+          ], [
+             {
+               'className': 'task task-assignment-timeline-object',
+               'group': '1',
+               'content': '<div class="task-assignment-timeline-content"' +
+                 'data-toggle="tooltip" data-placement="top"' +
+                 'data-html="true" data-container="body"' +
+                 'data-title="Task 8 (attempt 0)<br>' +
+                 'Status: SUCCESS<br>' +
+                 'Launch Time: 2015/08/14 01:44:51' +
+                 '<br>Finish Time: 2015/08/14 01:45:19' +
+                 '<br>Scheduler Delay: 11 ms' +
+                 '<br>Task Deserialization Time: 4 ms' +
+                 '<br>Shuffle Read Time: 0 ms' +
+                 '<br>Executor Computing Time: 28 s' +
+                 '<br>Shuffle Write Time: 48 ms' +
+                 '<br>Result Serialization Time: 0 ms' +
+                 '<br>Getting Result Time: 0 ms">' +
+                 '<svg class="task-assignment-timeline-duration-bar">' +
+                 '<rect class="scheduler-delay-proportion" ' +
+                   'x="0%" y="0px" height="26px"' +
+                   'width="0.03977437084177461%""></rect>' +
+                 '<rect class="deserialization-time-proportion" '+
+                   'x="0.03977437084177461%" y="0px" height="26px"' +
+                   'width="0.01446340757882557%"></rect>' +
+                 '<rect class="shuffle-read-time-proportion" ' +
+                   'x="0.05423777842060018%" y="0px" height="26px"' +
+                   'width="0.0%"></rect>' +
+                 '<rect class="executor-runtime-proportion" ' +
+                   'x="0.05423777842060018%" y="0px" height="26px"' +
+                   'width="99.7722013306335%"></rect>' +
+                 '<rect class="shuffle-write-time-proportion" ' +
+                   'x="99.82643910905409%" y="0px" height="26px"' +
+                   'width="0.17356089094590688%"></rect>' +
+                 '<rect class="serialization-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect>' +
+                 '<rect class="getting-result-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect></svg>',
+               'start': new Date(1439516691660),
+               'end': new Date(1439516719316)
+             }
+           ,
+             {
+               'className': 'task task-assignment-timeline-object',
+               'group': '0',
+               'content': '<div class="task-assignment-timeline-content"' +
+                 'data-toggle="tooltip" data-placement="top"' +
+                 'data-html="true" data-container="body"' +
+                 'data-title="Task 7 (attempt 0)<br>' +
+                 'Status: SUCCESS<br>' +
+                 'Launch Time: 2015/08/14 01:44:51' +
+                 '<br>Finish Time: 2015/08/14 01:45:17' +
+                 '<br>Scheduler Delay: 12 ms' +
+                 '<br>Task Deserialization Time: 7 ms' +
+                 '<br>Shuffle Read Time: 0 ms' +
+                 '<br>Executor Computing Time: 26 s' +
+                 '<br>Shuffle Write Time: 43 ms' +
+                 '<br>Result Serialization Time: 0 ms' +
+                 '<br>Getting Result Time: 0 ms">' +
+                 '<svg class="task-assignment-timeline-duration-bar">' +
+                 '<rect class="scheduler-delay-proportion" ' +
+                   'x="0%" y="0px" height="26px"' +
+                   'width="0.046699875466993834%""></rect>' +
+                 '<rect class="deserialization-time-proportion" '+
+                   'x="0.046699875466993834%" y="0px" height="26px"' +
+                   'width="0.02724159402241594%"></rect>' +
+                 '<rect class="shuffle-read-time-proportion" ' +
+                   'x="0.07394146948940977%" y="0px" height="26px"' +
+                   'width="0.0%"></rect>' +
+                 '<rect class="executor-runtime-proportion" ' +
+                   'x="0.07394146948940977%" y="0px" height="26px"' +
+                   'width="99.75871731008718%"></rect>' +
+                 '<rect class="shuffle-write-time-proportion" ' +
+                   'x="99.83265877957659%" y="0px" height="26px"' +
+                   'width="0.1673412204234122%"></rect>' +
+                 '<rect class="serialization-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect>' +
+                 '<rect class="getting-result-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect></svg>',
+               'start': new Date(1439516691607),
+               'end': new Date(1439516717303)
+             }
+           ,
+             {
+               'className': 'task task-assignment-timeline-object',
+               'group': '1',
+               'content': '<div class="task-assignment-timeline-content"' +
+                 'data-toggle="tooltip" data-placement="top"' +
+                 'data-html="true" data-container="body"' +
+                 'data-title="Task 6 (attempt 0)<br>' +
+                 'Status: SUCCESS<br>' +
+                 'Launch Time: 2015/08/14 01:44:51' +
+                 '<br>Finish Time: 2015/08/14 01:45:19' +
+                 '<br>Scheduler Delay: 12 ms' +
+                 '<br>Task Deserialization Time: 6 ms' +
+                 '<br>Shuffle Read Time: 0 ms' +
+                 '<br>Executor Computing Time: 28 s' +
+                 '<br>Shuffle Write Time: 0.2 s' +
+                 '<br>Result Serialization Time: 0 ms' +
+                 '<br>Getting Result Time: 0 ms">' +
+                 '<svg class="task-assignment-timeline-duration-bar">' +
+                 '<rect class="scheduler-delay-proportion" ' +
+                   'x="0%" y="0px" height="26px"' +
+                   'width="0.04284490145673095%""></rect>' +
+                 '<rect class="deserialization-time-proportion" '+
+                   'x="0.04284490145673095%" y="0px" height="26px"' +
+                   'width="0.021422450728363327%"></rect>' +
+                 '<rect class="shuffle-read-time-proportion" ' +
+                   'x="0.06426735218509427%" y="0px" height="26px"' +
+                   'width="0.0%"></rect>' +
+                 '<rect class="executor-runtime-proportion" ' +
+                   'x="0.06426735218509427%" y="0px" height="26px"' +
+                   'width="99.40017137960582%"></rect>' +
+                 '<rect class="shuffle-write-time-proportion" ' +
+                   'x="99.46443873179092%" y="0px" height="26px"' +
+                   'width="0.5355612682090831%"></rect>' +
+                 '<rect class="serialization-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect>' +
+                 '<rect class="getting-result-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect></svg>',
+               'start': new Date(1439516691320),
+               'end': new Date(1439516719328)
+             }
+           ,
+             {
+               'className': 'task task-assignment-timeline-object',
+               'group': '0',
+               'content': '<div class="task-assignment-timeline-content"' +
+                 'data-toggle="tooltip" data-placement="top"' +
+                 'data-html="true" data-container="body"' +
+                 'data-title="Task 5 (attempt 0)<br>' +
+                 'Status: SUCCESS<br>' +
+                 'Launch Time: 2015/08/14 01:44:25' +
+                 '<br>Finish Time: 2015/08/14 01:44:51' +
+                 '<br>Scheduler Delay: 22 ms' +
+                 '<br>Task Deserialization Time: 50 ms' +
+                 '<br>Shuffle Read Time: 0 ms' +
+                 '<br>Executor Computing Time: 26 s' +
+                 '<br>Shuffle Write Time: 46 ms' +
+                 '<br>Result Serialization Time: 0 ms' +
+                 '<br>Getting Result Time: 0 ms">' +
+                 '<svg class="task-assignment-timeline-duration-bar">' +
+                 '<rect class="scheduler-delay-proportion" ' +
+                   'x="0%" y="0px" height="26px"' +
+                   'width="0.08328916483682619%""></rect>' +
+                 '<rect class="deserialization-time-proportion" '+
+                   'x="0.08328916483682619%" y="0px" height="26px"' +
+                   'width="0.18929355644733853%"></rect>' +
+                 '<rect class="shuffle-read-time-proportion" ' +
+                   'x="0.2725827212841647%" y="0px" height="26px"' +
+                   'width="0.0%"></rect>' +
+                 '<rect class="executor-runtime-proportion" ' +
+                   'x="0.2725827212841647%" y="0px" height="26px"' +
+                   'width="99.55326720678428%"></rect>' +
+                 '<rect class="shuffle-write-time-proportion" ' +
+                   'x="99.82584992806845%" y="0px" height="26px"' +
+                   'width="0.17415007193155144%"></rect>' +
+                 '<rect class="serialization-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect>' +
+                 '<rect class="getting-result-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect></svg>',
+               'start': new Date(1439516665195),
+               'end': new Date(1439516691609)
+             }
+           ,
+             {
+               'className': 'task task-assignment-timeline-object',
+               'group': '1',
+               'content': '<div class="task-assignment-timeline-content"' +
+                 'data-toggle="tooltip" data-placement="top"' +
+                 'data-html="true" data-container="body"' +
+                 'data-title="Task 4 (attempt 0)<br>' +
+                 'Status: SUCCESS<br>' +
+                 'Launch Time: 2015/08/14 01:44:25' +
+                 '<br>Finish Time: 2015/08/14 01:44:51' +
+                 '<br>Scheduler Delay: 25 ms' +
+                 '<br>Task Deserialization Time: 52 ms' +
+                 '<br>Shuffle Read Time: 1 ms' +
+                 '<br>Executor Computing Time: 26 s' +
+                 '<br>Shuffle Write Time: 49 ms' +
+                 '<br>Result Serialization Time: 0 ms' +
+                 '<br>Getting Result Time: 0 ms">' +
+                 '<svg class="task-assignment-timeline-duration-bar">' +
+                 '<rect class="scheduler-delay-proportion" ' +
+                   'x="0%" y="0px" height="26px"' +
+                   'width="0.0944465432565148%""></rect>' +
+                 '<rect class="deserialization-time-proportion" '+
+                   'x="0.0944465432565148%" y="0px" height="26px"' +
+                   'width="0.19644880997355496%"></rect>' +
+                 '<rect class="shuffle-read-time-proportion" ' +
+                   'x="0.29089535323006976%" y="0px" height="26px"' +
+                   'width="0.0037778617302606727%"></rect>' +
+                 '<rect class="executor-runtime-proportion" ' +
+                   'x="0.29467321496033044%" y="0px" height="26px"' +
+                   'width="99.5202115602569%"></rect>' +
+                 '<rect class="shuffle-write-time-proportion" ' +
+                   'x="99.81488477521722%" y="0px" height="26px"' +
+                   'width="0.18511522478277295%"></rect>' +
+                 '<rect class="serialization-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect>' +
+                 '<rect class="getting-result-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect></svg>',
+               'start': new Date(1439516665192),
+               'end': new Date(1439516691662)
+             }
+           ,
+             {
+               'className': 'task task-assignment-timeline-object',
+               'group': '2',
+               'content': '<div class="task-assignment-timeline-content"' +
+                 'data-toggle="tooltip" data-placement="top"' +
+                 'data-html="true" data-container="body"' +
+                 'data-title="Task 3 (attempt 0)<br>' +
+                 'Status: SUCCESS<br>' +
+                 'Launch Time: 2015/08/14 01:44:25' +
+                 '<br>Finish Time: 2015/08/14 01:44:55' +
+                 '<br>Scheduler Delay: 52 ms' +
+                 '<br>Task Deserialization Time: 0.8 s' +
+                 '<br>Shuffle Read Time: 0.1 s' +
+                 '<br>Executor Computing Time: 29 s' +
+                 '<br>Shuffle Write Time: 49 ms' +
+                 '<br>Result Serialization Time: 0 ms' +
+                 '<br>Getting Result Time: 0 ms">' +
+                 '<svg class="task-assignment-timeline-duration-bar">' +
+                 '<rect class="scheduler-delay-proportion" ' +
+                   'x="0%" y="0px" height="26px"' +
+                   'width="0.17296434273550387%""></rect>' +
+                 '<rect class="deserialization-time-proportion" '+
+                   'x="0.17296434273550387%" y="0px" height="26px"' +
+                   'width="2.697578499201703%"></rect>' +
+                 '<rect class="shuffle-read-time-proportion" ' +
+                   'x="2.870542841937207%" y="0px" height="26px"' +
+                   'width="0.3858435337945716%"></rect>' +
+                 '<rect class="executor-runtime-proportion" ' +
+                   'x="3.2563863757317786%" y="0px" height="26px"' +
+                   'width="96.58062799361362%"></rect>' +
+                 '<rect class="shuffle-write-time-proportion" ' +
+                   'x="99.8370143693454%" y="0px" height="26px"' +
+                   'width="0.1629856306546035%"></rect>' +
+                 '<rect class="serialization-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect>' +
+                 '<rect class="getting-result-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect></svg>',
+               'start': new Date(1439516665190),
+               'end': new Date(1439516695254)
+             }
+           ,
+             {
+               'className': 'task task-assignment-timeline-object',
+               'group': '0',
+               'content': '<div class="task-assignment-timeline-content"' +
+                 'data-toggle="tooltip" data-placement="top"' +
+                 'data-html="true" data-container="body"' +
+                 'data-title="Task 2 (attempt 0)<br>' +
+                 'Status: SUCCESS<br>' +
+                 'Launch Time: 2015/08/14 01:44:25' +
+                 '<br>Finish Time: 2015/08/14 01:44:52' +
+                 '<br>Scheduler Delay: 28 ms' +
+                 '<br>Task Deserialization Time: 51 ms' +
+                 '<br>Shuffle Read Time: 0 ms' +
+                 '<br>Executor Computing Time: 27 s' +
+                 '<br>Shuffle Write Time: 50 ms' +
+                 '<br>Result Serialization Time: 0 ms' +
+                 '<br>Getting Result Time: 0 ms">' +
+                 '<svg class="task-assignment-timeline-duration-bar">' +
+                 '<rect class="scheduler-delay-proportion" ' +
+                   'x="0%" y="0px" height="26px"' +
+                   'width="0.10433745714711115%""></rect>' +
+                 '<rect class="deserialization-time-proportion" '+
+                   'x="0.10433745714711115%" y="0px" height="26px"' +
+                   'width="0.19004322551796096%"></rect>' +
+                 '<rect class="shuffle-read-time-proportion" ' +
+                   'x="0.2943806826650721%" y="0px" height="26px"' +
+                   'width="0.0%"></rect>' +
+                 '<rect class="executor-runtime-proportion" ' +
+                   'x="0.2943806826650721%" y="0px" height="26px"' +
+                   'width="99.51930242957222%"></rect>' +
+                 '<rect class="shuffle-write-time-proportion" ' +
+                   'x="99.8136831122373%" y="0px" height="26px"' +
+                   'width="0.1863168877627068%"></rect>' +
+                 '<rect class="serialization-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect>' +
+                 '<rect class="getting-result-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect></svg>',
+               'start': new Date(1439516665188),
+               'end': new Date(1439516692024)
+             }
+           ,
+             {
+               'className': 'task task-assignment-timeline-object',
+               'group': '1',
+               'content': '<div class="task-assignment-timeline-content"' +
+                 'data-toggle="tooltip" data-placement="top"' +
+                 'data-html="true" data-container="body"' +
+                 'data-title="Task 1 (attempt 0)<br>' +
+                 'Status: SUCCESS<br>' +
+                 'Launch Time: 2015/08/14 01:44:25' +
+                 '<br>Finish Time: 2015/08/14 01:44:51' +
+                 '<br>Scheduler Delay: 28 ms' +
+                 '<br>Task Deserialization Time: 55 ms' +
+                 '<br>Shuffle Read Time: 1 ms' +
+                 '<br>Executor Computing Time: 26 s' +
+                 '<br>Shuffle Write Time: 46 ms' +
+                 '<br>Result Serialization Time: 0 ms' +
+                 '<br>Getting Result Time: 0 ms">' +
+                 '<svg class="task-assignment-timeline-duration-bar">' +
+                 '<rect class="scheduler-delay-proportion" ' +
+                   'x="0%" y="0px" height="26px"' +
+                   'width="0.10713192531375115%""></rect>' +
+                 '<rect class="deserialization-time-proportion" '+
+                   'x="0.10713192531375115%" y="0px" height="26px"' +
+                   'width="0.21043771043771042%"></rect>' +
+                 '<rect class="shuffle-read-time-proportion" ' +
+                   'x="0.3175696357514616%" y="0px" height="26px"' +
+                   'width="0.0038261401897765534%"></rect>' +
+                 '<rect class="executor-runtime-proportion" ' +
+                   'x="0.32139577594123814%" y="0px" height="26px"' +
+                   'width="99.50260177532904%"></rect>' +
+                 '<rect class="shuffle-write-time-proportion" ' +
+                   'x="99.82399755127028%" y="0px" height="26px"' +
+                   'width="0.17600244872972146%"></rect>' +
+                 '<rect class="serialization-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect>' +
+                 '<rect class="getting-result-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect></svg>',
+               'start': new Date(1439516665186),
+               'end': new Date(1439516691322)
+             }
+           ,
+             {
+               'className': 'task task-assignment-timeline-object',
+               'group': '2',
+               'content': '<div class="task-assignment-timeline-content"' +
+                 'data-toggle="tooltip" data-placement="top"' +
+                 'data-html="true" data-container="body"' +
+                 'data-title="Task 0 (attempt 0)<br>' +
+                 'Status: SUCCESS<br>' +
+                 'Launch Time: 2015/08/14 01:44:25' +
+                 '<br>Finish Time: 2015/08/14 01:44:55' +
+                 '<br>Scheduler Delay: 56 ms' +
+                 '<br>Task Deserialization Time: 0.8 s' +
+                 '<br>Shuffle Read Time: 0.3 s' +
+                 '<br>Executor Computing Time: 29 s' +
+                 '<br>Shuffle Write Time: 59 ms' +
+                 '<br>Result Serialization Time: 0 ms' +
+                 '<br>Getting Result Time: 0 ms">' +
+                 '<svg class="task-assignment-timeline-duration-bar">' +
+                 '<rect class="scheduler-delay-proportion" ' +
+                   'x="0%" y="0px" height="26px"' +
+                   'width="0.18479408658922214%""></rect>' +
+                 '<rect class="deserialization-time-proportion" '+
+                   'x="0.18479408658922214%" y="0px" height="26px"' +
+                   'width="2.6762143611404436%"></rect>' +
+                 '<rect class="shuffle-read-time-proportion" ' +
+                   'x="2.861008447729666%" y="0px" height="26px"' +
+                   'width="1.0493664202745512%"></rect>' +
+                 '<rect class="executor-runtime-proportion" ' +
+                   'x="3.910374868004217%" y="0px" height="26px"' +
+                   'width="95.89493136219642%"></rect>' +
+                 '<rect class="shuffle-write-time-proportion" ' +
+                   'x="99.80530623020063%" y="0px" height="26px"' +
+                   'width="0.19469376979936642%"></rect>' +
+                 '<rect class="serialization-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect>' +
+                 '<rect class="getting-result-time-proportion" ' +
+                   'x="100.0%" y="0px" height="26px"' +
+                   'width="0.0%"></rect></svg>',
+               'start': new Date(1439516665180),
+               'end': new Date(1439516695484)
+             }
+           ], 1439516665180, 1439516719328)
+    </script><h4>Summary Metrics for 9 Completed Tasks</h4><div><table class="table table-bordered table-condensed sortable" id="task-summary-table">
+      <thead><th width="16.666666666666668%" class="">Metric</th><th width="16.666666666666668%" class="">Min</th><th width="16.666666666666668%" class="">25th percentile</th><th width="16.666666666666668%" class="">Median</th><th width="16.666666666666668%" class="">75th percentile</th><th width="16.666666666666668%" class="">Max</th></thead>
+      <tbody>
+        <tr><td>Duration</td><td>26 s</td><td>26 s</td><td>27 s</td><td>28 s</td><td>29 s</td></tr><tr class="scheduler_delay"><td><span data-toggle="tooltip" title="Scheduler delay includes time to ship the task from the scheduler to
+       the executor, and time to send the task result from the executor to the scheduler. If
+       scheduler delay is large, consider decreasing the size of tasks or decreasing the size
+       of task results." data-placement="right">Scheduler Delay</span></td><td>11 ms</td><td>12 ms</td><td>25 ms</td><td>28 ms</td><td>56 ms</td></tr><tr class="deserialization_time">
+              <td>
+              <span data-toggle="tooltip" title="Time spent deserializing the task closure on the executor, including the time to read the
+       broadcasted task." data-placement="right">
+                Task Deserialization Time
+              </span>
+            </td><td>4 ms</td><td>7 ms</td><td>51 ms</td><td>55 ms</td><td>0.8 s</td>
+            </tr><tr><td>
+              <span data-toggle="tooltip" title="Time that the executor spent paused for Java garbage collection while the task was
+       running." data-placement="right">GC Time
+              </span>
+            </td><td>2 s</td><td>2 s</td><td>3 s</td><td>6 s</td><td>7 s</td></tr><tr class="serialization_time">
+              <td>
+              <span data-toggle="tooltip" title="Time spent serializing the task result on the executor before sending it back to the
+       driver." data-placement="right">
+                Result Serialization Time
+              </span>
+            </td><td>0 ms</td><td>0 ms</td><td>0 ms</td><td>0 ms</td><td>0 ms</td>
+            </tr><tr class="getting_result_time"><td>
+              <span data-toggle="tooltip" title="Time that the driver spends fetching task results from workers. If this is large, consider
+       decreasing the amount of data returned from each task." data-placement="right">
+                Getting Result Time
+              </span>
+            </td><td>0 ms</td><td>0 ms</td><td>0 ms</td><td>0 ms</td><td>0 ms</td></tr><tr class="fetch_wait_time">
+                <td>
+              <span data-toggle="tooltip" title="Time that the task spent blocked waiting for shuffle data to be read from remote machines." data-placement="right">
+                Shuffle Read Blocked Time
+              </span>
+            </td><td>0 ms</td><td>0 ms</td><td>0 ms</td><td>1 ms</td><td>0.3 s</td>
+              </tr><tr><td>
+              <span data-toggle="tooltip" title="Total shuffle bytes and records read (includes both data read locally and data read from
+       remote executors). " data-placement="right">
+                Shuffle Read Size / Records
+              </span>
+            </td><td>24.8 MB / 2222220</td><td>24.8 MB / 2222221</td><td>24.8 MB / 2222222</td><td>24.8 MB / 2222224</td><td>24.8 MB / 2222224</td></tr><tr class="shuffle_read_remote">
+                <td>
+              <span data-toggle="tooltip" title="Total shuffle bytes read from remote executors. This is a subset of the shuffle
+       read bytes; the remaining shuffle data is read locally. " data-placement="right">
+                Shuffle Remote Reads
+              </span>
+            </td><td>12.4 MB</td><td>12.4 MB</td><td>12.4 MB</td><td>12.4 MB</td><td>24.8 MB</td>
+              </tr><tr><td>Shuffle Write Size / Records</td><td>13.3 MB / 2026076</td><td>13.4 MB / 2026367</td><td>13.4 MB / 2026600</td><td>13.4 MB / 2026945</td><td>13.4 MB / 2027221</td></tr><tr><td>Shuffle spill (memory)</td><td>186.7 MB</td><td>188.6 MB</td><td>191.9 MB</td><td>200.0 MB</td><td>204.2 MB</td></tr><tr><td>Shuffle spill (disk)</td><td>13.0 MB</td><td>13.2 MB</td><td>13.3 MB</td><td>13.4 MB</td><td>13.5 MB</td></tr>
+      </tbody>
+    </table></div><h4>Aggregated Metrics by Executor</h4><table class="table table-bordered table-condensed sortable table-striped">
+      <thead>
+        <th>Executor ID</th>
+        <th>Address</th>
+        <th>Task Time</th>
+        <th>Total Tasks</th>
+        <th>Failed Tasks</th>
+        <th>Succeeded Tasks</th>
+        
+        
+        <th>
+            <span data-toggle="tooltip" title="Total shuffle bytes and records read (includes both data read locally and data read from
+       remote executors). ">
+            Shuffle Read Size / Records</span>
+          </th>
+        <th>
+            <span data-toggle="tooltip" title="Bytes and records written to disk in order to be read by a shuffle in a future stage.">
+            Shuffle Write Size / Records</span>
+          </th>
+        <th>Shuffle Spill (Memory)</th><th>Shuffle Spill (Disk)</th>
+      </thead>
+      <tbody>
+        <tr>
+            <td>0</td>
+            <td>172.31.39.56:36858</td>
+            <td sorttable_customkey="78946">1.3 min</td>
+            <td>3</td>
+            <td>0</td>
+            <td>3</td>
+            
+            
+            <td sorttable_customkey="77938416">
+                74.3 MB / 6666667
+              </td>
+            <td sorttable_customkey="42146228">
+                40.2 MB / 6079629
+              </td>
+            <td sorttable_customkey="600727549">
+                572.9 MB
+              </td><td sorttable_customkey="41806729">
+                39.9 MB
+              </td>
+          </tr><tr>
+            <td>1</td>
+            <td>172.31.39.57:49075</td>
+            <td sorttable_customkey="108270">1.8 min</td>
+            <td>4</td>
+            <td>0</td>
+            <td>4</td>
+            
+            
+            <td sorttable_customkey="103913821">
+                99.1 MB / 8888889
+              </td>
+            <td sorttable_customkey="56344340">
+                53.7 MB / 8106383
+              </td>
+            <td sorttable_customkey="819115425">
+                781.2 MB
+              </td><td sorttable_customkey="55885764">
+                53.3 MB
+              </td>
+          </tr><tr>
+            <td>2</td>
+            <td>172.31.39.58:53891</td>
+            <td sorttable_customkey="60368">1.0 min</td>
+            <td>2</td>
+            <td>0</td>
+            <td>2</td>
+            
+            
+            <td sorttable_customkey="51939087">
+                49.5 MB / 4444444
+              </td>
+            <td sorttable_customkey="28174624">
+                26.9 MB / 4053745
+              </td>
+            <td sorttable_customkey="415316392">
+                396.1 MB
+              </td><td sorttable_customkey="27877881">
+                26.6 MB
+              </td>
+          </tr>
+      </tbody>
+    </table><h4>Tasks</h4><table class="table table-bordered table-condensed sortable table-striped">
+      <thead><th width="" class="">Index</th><th width="" class="">ID</th><th width="" class="">Attempt</th><th width="" class="">Status</th><th width="" class="">Locality Level</th><th width="" class="">Executor ID / Host</th><th width="" class="">Launch Time</th><th width="" class="">Duration</th><th width="" class="scheduler_delay">Scheduler Delay</th><th width="" class="deserialization_time">Task Deserialization Time</th><th width="" class="">GC Time</th><th width="" class="serialization_time">Result Serialization Time</th><th width="" class="getting_result_time">Getting Result Time</th><th width="" class="fetch_wait_time">Shuffle Read Blocked Time</th><th width="" class="">Shuffle Read Size / Records</th><th width="" class="shuffle_read_remote">Shuffle Remote Reads</th><th width="" class="">Write Time</th><th width="" class="">Shuffle Write Size / Records</th><th width="" class="">Shuffle Spill (Memory)</th><th width="" class="">Shuffle Spill (Disk)</th><th width="" class="">Errors</th></thead>
+      <tbody>
+        <tr>
+        <td>0</td>
+        <td>4</td>
+        <td sorttable_customkey="0">0</td>
+        <td>SUCCESS</td>
+        <td>PROCESS_LOCAL</td>
+        <td>2 / 172.31.39.58</td>
+        <td>2015/08/14 01:44:25</td>
+        <td sorttable_customkey="29437">
+          29 s
+        </td>
+        <td sorttable_customkey="56" class="scheduler_delay">
+          56 ms
+        </td>
+        <td sorttable_customkey="811" class="deserialization_time">
+          0.8 s
+        </td>
+        <td sorttable_customkey="2984">
+          3 s
+        </td>
+        <td sorttable_customkey="0" class="serialization_time">
+          0 ms
+        </td>
+        <td sorttable_customkey="0" class="getting_result_time">
+          0 ms
+        </td>
+        
+        
+        
+        <td sorttable_customkey="318" class="fetch_wait_time">
+             0.3 s
+           </td><td sorttable_customkey="25979109">
+             24.8 MB / 2222224
+           </td><td sorttable_customkey="25979109" class="shuffle_read_remote">
+             24.8 MB
+           </td>
+        <td sorttable_customkey="59059064">
+             59 ms
+           </td><td sorttable_customkey="14088162">
+             13.4 MB / 2026945
+           </td>
+        <td sorttable_customkey="214079906">
+            204.2 MB
+          </td><td sorttable_customkey="14205977">
+            13.5 MB
+          </td>
+        <td> </td>
+      </tr><tr>
+        <td>1</td>
+        <td>5</td>
+        <td sorttable_customkey="0">0</td>
+        <td>SUCCESS</td>
+        <td>PROCESS_LOCAL</td>
+        <td>1 / 172.31.39.57</td>
+        <td>2015/08/14 01:44:25</td>
+        <td sorttable_customkey="26053">
+          26 s
+        </td>
+        <td sorttable_customkey="28" class="scheduler_delay">
+          28 ms
+        </td>
+        <td sorttable_customkey="55" class="deserialization_time">
+          55 ms
+        </td>
+        <td sorttable_customkey="2331">
+          2 s
+        </td>
+        <td sorttable_customkey="0" class="serialization_time">
+          0 ms
+        </td>
+        <td sorttable_customkey="0" class="getting_result_time">
+          0 ms
+        </td>
+        
+        
+        
+        <td sorttable_customkey="1" class="fetch_wait_time">
+             1 ms
+           </td><td sorttable_customkey="25976947">
+             24.8 MB / 2222223
+           </td><td sorttable_customkey="12988910" class="shuffle_read_remote">
+             12.4 MB
+           </td>
+        <td sorttable_customkey="46392197">
+             46 ms
+           </td><td sorttable_customkey="14084823">
+             13.4 MB / 2026281
+           </td>
+        <td sorttable_customkey="199377665">
+            190.1 MB
+          </td><td sorttable_customkey="13862329">
+            13.2 MB
+          </td>
+        <td> </td>
+      </tr><tr>
+        <td>2</td>
+        <td>6</td>
+        <td sorttable_customkey="0">0</td>
+        <td>SUCCESS</td>
+        <td>PROCESS_LOCAL</td>
+        <td>0 / 172.31.39.56</td>
+        <td>2015/08/14 01:44:25</td>
+        <td sorttable_customkey="26757">
+          27 s
+        </td>
+        <td sorttable_customkey="28" class="scheduler_delay">
+          28 ms
+        </td>
+        <td sorttable_customkey="51" class="deserialization_time">
+          51 ms
+        </td>
+        <td sorttable_customkey="2212">
+          2 s
+        </td>
+        <td sorttable_customkey="0" class="serialization_time">
+          0 ms
+        </td>
+        <td sorttable_customkey="0" class="getting_result_time">
+          0 ms
+        </td>
+        
+        
+        
+        <td sorttable_customkey="0" class="fetch_wait_time">
+             0 ms
+           </td><td sorttable_customkey="25980156">
+             24.8 MB / 2222222
+           </td><td sorttable_customkey="12990541" class="shuffle_read_remote">
+             12.4 MB
+           </td>
+        <td sorttable_customkey="50401448">
+             50 ms
+           </td><td sorttable_customkey="14091015">
+             13.4 MB / 2026600
+           </td>
+        <td sorttable_customkey="207180661">
+            197.6 MB
+          </td><td sorttable_customkey="13994683">
+            13.3 MB
+          </td>
+        <td> </td>
+      </tr><tr>
+        <td>3</td>
+        <td>7</td>
+        <td sorttable_customkey="0">0</td>
+        <td>SUCCESS</td>
+        <td>PROCESS_LOCAL</td>
+        <td>2 / 172.31.39.58</td>
+        <td>2015/08/14 01:44:25</td>
+        <td sorttable_customkey="29201">
+          29 s
+        </td>
+        <td sorttable_customkey="52" class="scheduler_delay">
+          52 ms
+        </td>
+        <td sorttable_customkey="811" class="deserialization_time">
+          0.8 s
+        </td>
+        <td sorttable_customkey="2965">
+          3 s
+        </td>
+        <td sorttable_customkey="0" class="serialization_time">
+          0 ms
+        </td>
+        <td sorttable_customkey="0" class="getting_result_time">
+          0 ms
+        </td>
+        
+        
+        
+        <td sorttable_customkey="116" class="fetch_wait_time">
+             0.1 s
+           </td><td sorttable_customkey="25959978">
+             24.8 MB / 2222220
+           </td><td sorttable_customkey="25959978" class="shuffle_read_remote">
+             24.8 MB
+           </td>
+        <td sorttable_customkey="49194408">
+             49 ms
+           </td><td sorttable_customkey="14086462">
+             13.4 MB / 2026800
+           </td>
+        <td sorttable_customkey="201236486">
+            191.9 MB
+          </td><td sorttable_customkey="13671904">
+            13.0 MB
+          </td>
+        <td> </td>
+      </tr><tr>
+        <td>4</td>
+        <td>8</td>
+        <td sorttable_customkey="0">0</td>
+        <td>SUCCESS</td>
+        <td>PROCESS_LOCAL</td>
+        <td>1 / 172.31.39.57</td>
+        <td>2015/08/14 01:44:25</td>
+        <td sorttable_customkey="26393">
+          26 s
+        </td>
+        <td sorttable_customkey="25" class="scheduler_delay">
+          25 ms
+        </td>
+        <td sorttable_customkey="52" class="deserialization_time">
+          52 ms
+        </td>
+        <td sorttable_customkey="2331">
+          2 s
+        </td>
+        <td sorttable_customkey="0" class="serialization_time">
+          0 ms
+        </td>
+        <td sorttable_customkey="0" class="getting_result_time">
+          0 ms
+        </td>
+        
+        
+        
+        <td sorttable_customkey="1" class="fetch_wait_time">
+             1 ms
+           </td><td sorttable_customkey="25979686">
+             24.8 MB / 2222220
+           </td><td sorttable_customkey="12989338" class="shuffle_read_remote">
+             12.4 MB
+           </td>
+        <td sorttable_customkey="49210705">
+             49 ms
+           </td><td sorttable_customkey="14083230">
+             13.4 MB / 2026514
+           </td>
+        <td sorttable_customkey="196060561">
+            187.0 MB
+          </td><td sorttable_customkey="14090770">
+            13.4 MB
+          </td>
+        <td> </td>
+      </tr><tr>
+        <td>5</td>
+        <td>9</td>
+        <td sorttable_customkey="0">0</td>
+        <td>SUCCESS</td>
+        <td>PROCESS_LOCAL</td>
+        <td>0 / 172.31.39.56</td>
+        <td>2015/08/14 01:44:25</td>
+        <td sorttable_customkey="26342">
+          26 s
+        </td>
+        <td sorttable_customkey="22" class="scheduler_delay">
+          22 ms
+        </td>
+        <td sorttable_customkey="50" class="deserialization_time">
+          50 ms
+        </td>
+        <td sorttable_customkey="2212">
+          2 s
+        </td>
+        <td sorttable_customkey="0" class="serialization_time">
+          0 ms
+        </td>
+        <td sorttable_customkey="0" class="getting_result_time">
+          0 ms
+        </td>
+        
+        
+        
+        <td sorttable_customkey="0" class="fetch_wait_time">
+             0 ms
+           </td><td sorttable_customkey="25980222">
+             24.8 MB / 2222221
+           </td><td sorttable_customkey="12989467" class="shuffle_read_remote">
+             12.4 MB
+           </td>
+        <td sorttable_customkey="46437730">
+             46 ms
+           </td><td sorttable_customkey="14086289">
+             13.4 MB / 2026076
+           </td>
+        <td sorttable_customkey="197763633">
+            188.6 MB
+          </td><td sorttable_customkey="13828486">
+            13.2 MB
+          </td>
+        <td> </td>
+      </tr><tr>
+        <td>6</td>
+        <td>10</td>
+        <td sorttable_customkey="0">0</td>
+        <td>SUCCESS</td>
+        <td>PROCESS_LOCAL</td>
+        <td>1 / 172.31.39.57</td>
+        <td>2015/08/14 01:44:51</td>
+        <td sorttable_customkey="27990">
+          28 s
+        </td>
+        <td sorttable_customkey="12" class="scheduler_delay">
+          12 ms
+        </td>
+        <td sorttable_customkey="6" class="deserialization_time">
+          6 ms
+        </td>
+        <td sorttable_customkey="6855">
+          7 s
+        </td>
+        <td sorttable_customkey="0" class="serialization_time">
+          0 ms
+        </td>
+        <td sorttable_customkey="0" class="getting_result_time">
+          0 ms
+        </td>
+        
+        
+        
+        <td sorttable_customkey="0" class="fetch_wait_time">
+             0 ms
+           </td><td sorttable_customkey="25978716">
+             24.8 MB / 2222222
+           </td><td sorttable_customkey="12988246" class="shuffle_read_remote">
+             12.4 MB
+           </td>
+        <td sorttable_customkey="150421892">
+             0.2 s
+           </td><td sorttable_customkey="14088011">
+             13.4 MB / 2027221
+           </td>
+        <td sorttable_customkey="209743801">
+            200.0 MB
+          </td><td sorttable_customkey="14098069">
+            13.4 MB
+          </td>
+        <td> </td>
+      </tr><tr>
+        <td>7</td>
+        <td>11</td>
+        <td sorttable_customkey="0">0</td>
+        <td>SUCCESS</td>
+        <td>PROCESS_LOCAL</td>
+        <td>0 / 172.31.39.56</td>
+        <td>2015/08/14 01:44:51</td>
+        <td sorttable_customkey="25677">
+          26 s
+        </td>
+        <td sorttable_customkey="12" class="scheduler_delay">
+          12 ms
+        </td>
+        <td sorttable_customkey="7" class="deserialization_time">
+          7 ms
+        </td>
+        <td sorttable_customkey="5525">
+          6 s
+        </td>
+        <td sorttable_customkey="0" class="serialization_time">
+          0 ms
+        </td>
+        <td sorttable_customkey="0" class="getting_result_time">
+          0 ms
+        </td>
+        
+        
+        
+        <td sorttable_customkey="0" class="fetch_wait_time">
+             0 ms
+           </td><td sorttable_customkey="25978038">
+             24.8 MB / 2222224
+           </td><td sorttable_customkey="12989349" class="shuffle_read_remote">
+             12.4 MB
+           </td>
+        <td sorttable_customkey="43781135">
+             43 ms
+           </td><td sorttable_customkey="13968924">
+             13.3 MB / 2026953
+           </td>
+        <td sorttable_customkey="195783255">
+            186.7 MB
+          </td><td sorttable_customkey="13983560">
+            13.3 MB
+          </td>
+        <td> </td>
+      </tr><tr>
+        <td>8</td>
+        <td>12</td>
+        <td sorttable_customkey="0">0</td>
+        <td>SUCCESS</td>
+        <td>PROCESS_LOCAL</td>
+        <td>1 / 172.31.39.57</td>
+        <td>2015/08/14 01:44:51</td>
+        <td sorttable_customkey="27641">
+          28 s
+        </td>
+        <td sorttable_customkey="11" class="scheduler_delay">
+          11 ms
+        </td>
+        <td sorttable_customkey="4" class="deserialization_time">
+          4 ms
+        </td>
+        <td sorttable_customkey="6855">
+          7 s
+        </td>
+        <td sorttable_customkey="0" class="serialization_time">
+          0 ms
+        </td>
+        <td sorttable_customkey="0" class="getting_result_time">
+          0 ms
+        </td>
+        
+        
+        
+        <td sorttable_customkey="0" class="fetch_wait_time">
+             0 ms
+           </td><td sorttable_customkey="25978472">
+             24.8 MB / 2222224
+           </td><td sorttable_customkey="12989407" class="shuffle_read_remote">
+             12.4 MB
+           </td>
+        <td sorttable_customkey="48743704">
+             48 ms
+           </td><td sorttable_customkey="14088276">
+             13.4 MB / 2026367
+           </td>
+        <td sorttable_customkey="213933398">
+            204.0 MB
+          </td><td sorttable_customkey="13834596">
+            13.2 MB
+          </td>
+        <td> </td>
+      </tr>
+      </tbody>
+    </table>
+        </div>
+      </body>
+    </html>

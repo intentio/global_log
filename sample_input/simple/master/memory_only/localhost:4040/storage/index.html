@@ -1,0 +1,62 @@
+<!DOCTYPE html><html>
+      <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/><link rel="stylesheet" href="../static/bootstrap.min.css" type="text/css"/><link rel="stylesheet" href="../static/vis.min.css" type="text/css"/><link rel="stylesheet" href="../static/webui.css" type="text/css"/><link rel="stylesheet" href="../static/timeline-view.css" type="text/css"/><script src="../static/sorttable.js"></script><script src="../static/jquery-1.11.1.min.js"></script><script src="../static/vis.min.js"></script><script src="../static/bootstrap-tooltip.js"></script><script src="../static/initialize-tooltips.js"></script><script src="../static/table.js"></script><script src="../static/additional-metrics.js"></script><script src="../static/timeline-view.js"></script>
+        
+        <title>MemoryOnly - Storage</title>
+      </head>
+      <body>
+        <div class="navbar navbar-static-top">
+          <div class="navbar-inner">
+            <div class="brand">
+              <a href="../index.html" class="brand">
+                <img src="../static/spark-logo-77x50px-hd.png"/>
+                <span class="version">1.4.0</span>
+              </a>
+            </div>
+            <ul class="nav"><li class="">
+        <a href="../img/glyphicons-halflings-white.png">Jobs</a>
+      </li><li class="">
+        <a href="../stages/index.html">Stages</a>
+      </li><li class="active">
+        <a href="index.html">Storage</a>
+      </li><li class="">
+        <a href="../environment/index.html">Environment</a>
+      </li><li class="">
+        <a href="../executors/index.html">Executors</a>
+      </li></ul>
+            <p class="navbar-text pull-right">
+              <strong title="MemoryOnly">MemoryOnly</strong> application UI
+            </p>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row-fluid">
+            <div class="span12">
+              <h3 style="vertical-align: bottom; display: inline-block;">
+                Storage
+                
+              </h3>
+            </div>
+          </div>
+          <table class="table table-bordered table-condensed sortable table-striped" id="storage-by-rdd-table">
+      <thead><th width="" class="">RDD Name</th><th width="" class="">Storage Level</th><th width="" class="">Cached Partitions</th><th width="" class="">Fraction Cached</th><th width="" class="">Size in Memory</th><th width="" class="">Size in ExternalBlockStore</th><th width="" class="">Size on Disk</th></thead>
+      <tbody>
+        <tr>
+      <td>
+        <a href="rdd?id=6">
+          MapPartitionsRDD
+        </a>
+      </td>
+      <td>Memory Deserialized 1x Replicated
+      </td>
+      <td>9</td>
+      <td>100%</td>
+      <td sorttable_customkey="1199988952">1144.4 MB</td>
+      <td sorttable_customkey="0">0.0 B</td>
+      <td sorttable_customkey="0">0.0 B</td>
+    </tr>
+      </tbody>
+    </table>
+        </div>
+      </body>
+    </html>
