@@ -1,18 +1,19 @@
 import sys
+sys.path.insert(0, 'src')
 
-from eventlog import *
-from btrace import *
+from driver_log import *
+from executor_log import *
 
 def plot_driver(eventlog, btracelog):
-    jobs = parse_eventlog(eventlog)
-    print jobs[0].stages[1].tasks[6].shuffle_metrics
-    result = parse_driver_btrace(btracelog, jobs)
-    plot_driver_btrace(btracelog, result)
+    dl = DriverLog(eventlog, btracelog)
+    dl.parse()
+    dl.plot()
+    #print dl.jobs[0].stages[1].tasks[6].shuffle_metrics
 
 def plot_executor(eventlog, btracelog):
-    jobs = parse_eventlog(eventlog)
-    result = parse_executor_btrace(btracelog, jobs)
-    plot_executor_btrace(btracelog, result)
+    el = ExecutorLog(eventlog, btracelog)
+    el.parse()
+    el.plot()
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
