@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
 import numpy as np
+from termcolor import colored
 
 from events import *
 
@@ -15,114 +16,6 @@ class DriverLog:
     def parse(self):
         self.parse_eventlog()
         self.parse_btracelog()
-
-    ####
-    # job_start / job end
-    #   dictionary, where
-    #   - key1: job_id
-    #
-    # stage_submitted / stage_completed
-    #   dictionary of dictionaries, where
-    #   - key1: job_id
-    #   - key2: (stage_id, stage_attempt_id)
-    #
-    # task_start / task_end
-    #   dictionary of dictionaries, where
-    #   - key2: (stage_id, stage_attempt_id)
-    #   - key3: (task_id, task_attempt_id)
-    # 
-    # Returns the list of jobs in which each of jobs contains all the
-    # stages and tasks that have ran during the job.
-    def parse_eventlog(self):
-        job_start = {}
-        job_end = {}
-        stage_submitted = {}
-        stage_completed = {}
-        task_start = {}
-        task_end = {}
-        last_job = None
-
-        # Parse eventlogs and put them in separate dictionaries.
-        f = open(self.eventlog_fname, "r")
-        for line in f.readlines():
-            j = json.loads(line)
-            if j["Event"] == "SparkListenerJobStart":
-                key1 = j["Job ID"]
-                job_start[key1] = j
-                last_job = key1
-                stage_submitted[key1] = {}
-                stage_completed[key1] = {}
-                for s in j["Stage Infos"]:
-                    stage_id = s["Stage ID"]
-                    stage_attempt_id = s["Stage Attempt ID"]
-                    key2 = (stage_id, stage_attempt_id)
-                    stage_submitted[key1][key2] = None
-                    stage_completed[key1][key2] = None
-            elif j["Event"] == "SparkListenerJobEnd":
-                key1 = j["Job ID"]
-                job_end[key1] = j
-            elif j["Event"] == "SparkListenerStageSubmitted":
-                key1 = last_job
-                assert stage_submitted.has_key(key1)
-                stage_id = j["Stage Info"]["Stage ID"]
-                stage_attempt_id = j["Stage Info"]["Stage Attempt ID"]
-                key2 = (stage_id, stage_attempt_id)
-                assert stage_submitted[key1].has_key(key2)
-                stage_submitted[key1][key2] = j
-            elif j["Event"] == "SparkListenerStageCompleted":
-                key1 = last_job
-                assert stage_completed.has_key(key1)
-                stage_id = j["Stage Info"]["Stage ID"]
-                stage_attempt_id = j["Stage Info"]["Stage Attempt ID"]
-                key2 = (stage_id, stage_attempt_id)
-                assert stage_completed[key1].has_key(key2)
-                stage_completed[key1][key2] = j
-            elif j["Event"] == "SparkListenerTaskStart":
-                stage_id = j["Stage ID"]
-                stage_attempt_id = j["Stage Attempt ID"]
-                key2 = (stage_id, stage_attempt_id)
-                task_id = j["Task Info"]["Task ID"]
-                task_attempt_id = j["Task Info"]["Attempt"]
-                key3 = (task_id, task_attempt_id)
-                if not task_start.has_key(key2):
-                    task_start[key2] = {}
-                task_start[key2][key3] = j
-            elif j["Event"] == "SparkListenerTaskEnd":
-                stage_id = j["Stage ID"]
-                stage_attempt_id = j["Stage Attempt ID"]
-                key2 = (stage_id, stage_attempt_id)
-                task_id = j["Task Info"]["Task ID"]
-                task_attempt_id = j["Task Info"]["Attempt"]
-                key3 = (task_id, task_attempt_id)
-                if not task_end.has_key(key2):
-                    task_end[key2] = {}
-                task_end[key2][key3] = j
-            # Add more "Event" cases here
-        f.close()
-
-        # Combine the dictionaries into list of Jobs, in which each of
-        # Jobs contains according Stages and Tasks.
-        key1s = job_start.keys()
-        key1s.sort()
-        for key1 in key1s:
-            job = Job(job_start[key1], job_end[key1])
-            key2s = stage_submitted[key1].keys()
-            key2s.sort()
-            for key2 in key2s:
-                stage = Stage(stage_submitted[key1][key2], stage_completed[key1][key2])
-                key3s = task_start[key2].keys()
-                key3s.sort()
-                for key3 in key3s:
-                    task = Task(task_start[key2][key3], task_end[key2][key3])
-                    stage.tasks.append(task)
-                job.stages.append(stage)
-            self.jobs.append(job)
-
-        # Compute additional stuff for each of Stages.
-        for job in self.jobs:
-            for stage in job.stages:
-                stage.compute_total_data_read_cached()
-
 
     def parse_btracelog(self):
         if len(self.jobs) == 0:
@@ -262,6 +155,16 @@ class DriverLog:
             elif isinstance(tup[2], Persist):
                 c.append('b')
 
+        print colored("Yellow", 'yellow') + ": Job"
+        print colored("Green ", 'green') + ": Stage"
+        print colored("Red   ", 'red') + ": Task"
+        print colored("Blue  ", 'blue') + ": Persist\n"
+
+        print "[ Executor Memory ]"
+        print "- Max JVM Heap Used = " + str(self.max_heap) + "(MB)"
+
+        print "\n"
+
         # By clicking each of collected btrace events on the graph,
         # you can print out text associated with the event.
         def onclick(event):
@@ -278,3 +181,113 @@ class DriverLog:
         ax.scatter(x, y, 50, c, picker=True)
         fig.canvas.mpl_connect('pick_event', onclick)
         plt.show()
+
+
+    ####
+    # job_start / job end
+    #   dictionary, where
+    #   - key1: job_id
+    #
+    # stage_submitted / stage_completed
+    #   dictionary of dictionaries, where
+    #   - key1: job_id
+    #   - key2: (stage_id, stage_attempt_id)
+    #
+    # task_start / task_end
+    #   dictionary of dictionaries, where
+    #   - key2: (stage_id, stage_attempt_id)
+    #   - key3: (task_id, task_attempt_id)
+    # 
+    # Returns the list of jobs in which each of jobs contains all the
+    # stages and tasks that have ran during the job.
+    def parse_eventlog(self):
+        job_start = {}
+        job_end = {}
+        stage_submitted = {}
+        stage_completed = {}
+        task_start = {}
+        task_end = {}
+        last_job = None
+
+        # Parse eventlogs and put them in separate dictionaries.
+        f = open(self.eventlog_fname, "r")
+        for line in f.readlines():
+            j = json.loads(line)
+            if j["Event"] == "SparkListenerJobStart":
+                key1 = j["Job ID"]
+                job_start[key1] = j
+                last_job = key1
+                stage_submitted[key1] = {}
+                stage_completed[key1] = {}
+                for s in j["Stage Infos"]:
+                    stage_id = s["Stage ID"]
+                    stage_attempt_id = s["Stage Attempt ID"]
+                    key2 = (stage_id, stage_attempt_id)
+                    stage_submitted[key1][key2] = None
+                    stage_completed[key1][key2] = None
+            elif j["Event"] == "SparkListenerJobEnd":
+                key1 = j["Job ID"]
+                job_end[key1] = j
+            elif j["Event"] == "SparkListenerStageSubmitted":
+                key1 = last_job
+                assert stage_submitted.has_key(key1)
+                stage_id = j["Stage Info"]["Stage ID"]
+                stage_attempt_id = j["Stage Info"]["Stage Attempt ID"]
+                key2 = (stage_id, stage_attempt_id)
+                assert stage_submitted[key1].has_key(key2)
+                stage_submitted[key1][key2] = j
+            elif j["Event"] == "SparkListenerStageCompleted":
+                key1 = last_job
+                assert stage_completed.has_key(key1)
+                stage_id = j["Stage Info"]["Stage ID"]
+                stage_attempt_id = j["Stage Info"]["Stage Attempt ID"]
+                key2 = (stage_id, stage_attempt_id)
+                assert stage_completed[key1].has_key(key2)
+                stage_completed[key1][key2] = j
+            elif j["Event"] == "SparkListenerTaskStart":
+                stage_id = j["Stage ID"]
+                stage_attempt_id = j["Stage Attempt ID"]
+                key2 = (stage_id, stage_attempt_id)
+                task_id = j["Task Info"]["Task ID"]
+                task_attempt_id = j["Task Info"]["Attempt"]
+                key3 = (task_id, task_attempt_id)
+                if not task_start.has_key(key2):
+                    task_start[key2] = {}
+                task_start[key2][key3] = j
+            elif j["Event"] == "SparkListenerTaskEnd":
+                stage_id = j["Stage ID"]
+                stage_attempt_id = j["Stage Attempt ID"]
+                key2 = (stage_id, stage_attempt_id)
+                task_id = j["Task Info"]["Task ID"]
+                task_attempt_id = j["Task Info"]["Attempt"]
+                key3 = (task_id, task_attempt_id)
+                if not task_end.has_key(key2):
+                    task_end[key2] = {}
+                task_end[key2][key3] = j
+            # Add more "Event" cases here
+        f.close()
+
+        # Combine the dictionaries into list of Jobs, in which each of
+        # Jobs contains according Stages and Tasks.
+        key1s = job_start.keys()
+        key1s.sort()
+        for key1 in key1s:
+            job = Job(job_start[key1], job_end[key1])
+            key2s = stage_submitted[key1].keys()
+            key2s.sort()
+            for key2 in key2s:
+                stage = Stage(stage_submitted[key1][key2], stage_completed[key1][key2])
+                key3s = task_start[key2].keys()
+                key3s.sort()
+                for key3 in key3s:
+                    task = Task(task_start[key2][key3], task_end[key2][key3])
+                    stage.tasks.append(task)
+                job.stages.append(stage)
+            self.jobs.append(job)
+
+        # Compute additional stuff for each of Stages.
+        for job in self.jobs:
+            for stage in job.stages:
+                stage.compute_total_data_read_cached()
+
+

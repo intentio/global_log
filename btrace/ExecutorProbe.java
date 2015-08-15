@@ -17,9 +17,13 @@ import java.util.List;
  * - time(ms),heap(MB),persist,memory,size(B)
  *
  * Shuffle start/end/spill
- * - time(ms),heap(MB),shuffle,start
- * - time(ms),heap(MB),shuffle,end
- * - time(ms),heap(MB),shuffle,spill,size(B)
+ * - time(ms),heap(MB),shuffle,map,start
+ * - time(ms),heap(MB),shuffle,sorter,start
+ * - time(ms),heap(MB),shuffle,map,end
+ * - time(ms),heap(MB),shuffle,sorter,end
+ * - time(ms),heap(MB),shuffle,map,spill,size(B)
+ * - time(ms),heap(MB),shuffle,sorter,spill,size(B)
+ * - time(ms),heap(MB),shuffle,manager,release,size(B)
  *
  * Alarm
  * - time(ms),heap(MB)
@@ -65,42 +69,66 @@ public class ExecutorProbe {
         method   = "insertAll",
         location = @Location(value=Kind.ENTRY))
     public static void ExternalAppendOnlyMap_insertAll_entry() {
-        // time,heap(MB),shuffle,start
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,start,map");
+        // time,heap(MB),shuffle,map,start
+        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,map,start");
     }
     @OnMethod(  // Start
         clazz    = "org.apache.spark.util.collection.ExternalSorter",
         method   = "insertAll",
         location = @Location(value=Kind.ENTRY))
     public static void ExternalSorter_insertAll_entry() {
-        // time,heap(MB),shuffle,start
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,start,sorter");
+        // time,heap(MB),shuffle,sorter,start
+        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,sorter,start");
     }
     @OnMethod(  // End
         clazz    = "org.apache.spark.util.collection.ExternalAppendOnlyMap",
         method   = "insertAll",
         location = @Location(value=Kind.RETURN))
     public static void ExternalAppendOnlyMap_insertAll_return() {
-        // time,heap(MB),shuffle,end
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,end,map");
+        // time,heap(MB),shuffle,map,end
+        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,map,end");
     }
     @OnMethod(  // End
         clazz    = "org.apache.spark.util.collection.ExternalSorter",
         method   = "insertAll",
         location = @Location(value=Kind.RETURN))
     public static void ExternalSorter_insertAll_return() {
-        // time,heap(MB),shuffle,end
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,end,sorter");
+        // time,heap(MB),shuffle,sorter,end
+        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,sorter,end");
     }
     @OnMethod(  // Spill
+        clazz    = "org.apache.spark.util.collection.ExternalAppendOnlyMap",
+        method   = "spill",
+        location = @Location(value=Kind.ENTRY))
+    public static void ExternalAppendOnlyMap_spill_entry(AnyType[] args) {
+        /* args[0] SizeTracker
+         */
+        // time,heap(MB),shuffle,map,spill,size
+        org.apache.spark.util.collection.SizeTracker st = (org.apache.spark.util.collection.SizeTracker) args[0];
+        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,map,spill," + st.estimateSize());
+    }
+    @OnMethod(  // Spill
+        clazz    = "org.apache.spark.util.collection.ExternalSorter",
+        method   = "spill",
+        location = @Location(value=Kind.ENTRY))
+    public static void ExternalSorter_spill_entry(AnyType[] args) {
+        /* args[0]
+         * PartitionedPairBuffer extends WritablePartitionedPairCollection with SizeTracker
+         * PartitionedSerializedPairBuffer extends WritablePartitionedPairCollection with SizeTracker
+         */
+        // time,heap(MB),shuffle,sorter,spill,size
+        org.apache.spark.util.collection.SizeTracker st = (org.apache.spark.util.collection.SizeTracker) args[0];
+        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,sorter,spill," + st.estimateSize());
+    }
+    @OnMethod(  // Release
         clazz    = "org.apache.spark.shuffle.ShuffleMemoryManager",
         method   = "release",
         location = @Location(value=Kind.ENTRY))
-    public static void ShuffleMemoryManager_release_entry(@Self AnyType self, AnyType[] args) {
+    public static void ShuffleMemoryManager_release_entry(AnyType[] args) {
         /* args[0] Long numBytes
          */
-        // time,heap(MB),shuffle,spill,size
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,spill," + args[0]);
+        // time,heap(MB),shuffle,manager,release,size
+        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,manager,release," + args[0]);
     }
 
     /* Alarm for Heap Usage */
