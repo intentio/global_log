@@ -4,6 +4,7 @@ export SPARK_GLOG_HOME="$(cd "`dirname "$0"`"/..; pwd)"
 
 function usage {
     echo "Usage: spark-glog <driver|executor> eventlog btracelog"
+    exit
 }
 
 function install {
