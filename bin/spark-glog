@@ -1,0 +1,34 @@
+#!/bin/bash
+
+export SPARK_GLOG_HOME="$(cd "`dirname "$0"`"/..; pwd)"
+
+function usage {
+    echo "Usage: spark-glog <driver|executor> eventlog btracelog"
+}
+
+function install {
+    if ! dpkg -s $1 2>/dev/null >/dev/null; then
+        echo -e "Need to install $1. Install? [Y/n] \c"
+        read
+        if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
+            sudo apt-get install $1
+        fi
+        echo ""
+    fi
+}
+
+install python-matplotlib
+install python-termcolor
+
+
+if [ "$#" -ne 3 ]; then
+    usage
+fi
+
+if [ "$1" == "driver" ]; then
+    python "$SPARK_GLOG_HOME"/src/driver_log.py $2 $3
+elif [ "$1" == "executor" ]; then
+    python "$SPARK_GLOG_HOME"/src/executor_log.py $2 $3
+else
+    usage
+fi

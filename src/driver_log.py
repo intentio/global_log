@@ -2,7 +2,10 @@ from matplotlib import pyplot as plt
 import numpy as np
 from termcolor import colored
 
-from events import *
+from event.job import *
+from event.stage import *
+from event.task import *
+from event.persist import *
 
 class DriverLog:
     def __init__(self, eventlog_fname, btracelog_fname):
@@ -291,3 +294,8 @@ class DriverLog:
                 stage.compute_total_data_read_cached()
 
 
+import sys
+if __name__ == "__main__":
+    dl = DriverLog(sys.argv[1], sys.argv[2])
+    dl.parse()
+    dl.plot()

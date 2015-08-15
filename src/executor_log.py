@@ -2,7 +2,11 @@ from matplotlib import pyplot as plt
 import numpy as np
 from termcolor import colored
 
-from events import *
+from event.job import *
+from event.stage import *
+from event.task import *
+from event.persist import *
+from event.shuffle import *
 
 class ExecutorLog:
     def __init__(self, eventlog_fname, btracelog_fname):
@@ -269,3 +273,10 @@ class ExecutorLog:
         if l <= 3: return str(size) + "(B)"
         elif l <= 6: return str( round(size / 1024.0, 2) ) + "(KB)"
         else: return str( round(size / 1024.0 / 1024.0, 2) ) + "(MB)"
+
+
+import sys
+if __name__ == "__main__":
+    el = ExecutorLog(sys.argv[1], sys.argv[2])
+    el.parse()
+    el.plot()
