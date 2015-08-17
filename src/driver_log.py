@@ -2,6 +2,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 from termcolor import colored
 
+from event.environment import *
 from event.job import *
 from event.stage import *
 from event.task import *
@@ -12,8 +13,11 @@ class DriverLog:
         self.eventlog_fname = eventlog_fname
         self.btracelog_fname = btracelog_fname
         
+        self.environment = None
         self.jobs = []
         self.persists = []
+        self.time_sorted_combined_events = []
+
         self.max_heap = None
 
     def parse(self):
@@ -21,22 +25,17 @@ class DriverLog:
         self.parse_btracelog()
 
     def parse_btracelog(self):
-        if len(self.jobs) == 0:
-            return
-        
+        if len(self.jobs) == 0: return
         j = 0
         s = 0
-
         f = open(self.btracelog_fname, "r")
         for line in f.readlines():
             lst = line[:-1].split(",")
             if len(lst) <= 2:
                 continue
-
             time = long(lst[0])  # vm up time (ms)
             heap = float(lst[1])  # jvm heap used (MB)
             event = lst[2]
-
             if event == "job":
                 job = self.jobs[j]
                 job_id = int(lst[4])
@@ -84,33 +83,22 @@ class DriverLog:
                 self.persists.append(Persist(lst))
         f.close()
 
-
-    def plot(self):
-        # Plot all the collected (time,heap) points.
-        x, y = np.loadtxt(self.btracelog_fname, unpack=True, delimiter=",")
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        ax.plot(x, y)
-        ax.set_xlabel("Time (ms)")
-        ax.set_ylabel("JVM Heap Used (MB)")
-        self.max_heap = max(y)
-        ax.text(0.05, 0.95, "Max JVM Heap Used = " + str(self.max_heap) + " (MB)", transform=ax.transAxes, verticalalignment='top')
-
+    def combine(self):
         # Collect all the btrace events except periodic alarm function.
-        d = []
+        self.time_sorted_combined_events = []
         for job in self.jobs:
-            d.append( (job.start_time, job.start_heap, job, "start") )
-            d.append( (job.end_time, job.end_heap, job, "end") )
+            self.time_sorted_combined_events.append( (job.start_time, job.start_heap, job, "start") )
+            self.time_sorted_combined_events.append( (job.end_time, job.end_heap, job, "end") )
             for stage in job.stages:
-                d.append( (stage.start_time, stage.start_heap, stage, "start") )
-                d.append( (stage.end_time, stage.end_heap, stage, "end") )
+                self.time_sorted_combined_events.append( (stage.start_time, stage.start_heap, stage, "start") )
+                self.time_sorted_combined_events.append( (stage.end_time, stage.end_heap, stage, "end") )
                 for task in stage.tasks:
-                    d.append( (task.start_time, task.start_heap, task, "start") )
-                    d.append( (task.end_time, task.end_heap, task, "end") )
+                    self.time_sorted_combined_events.append( (task.start_time, task.start_heap, task, "start") )
+                    self.time_sorted_combined_events.append( (task.end_time, task.end_heap, task, "end") )
         for persist in self.persists:
-            d.append( (persist.time, persist.heap, persist) )
+            self.time_sorted_combined_events.append( (persist.time, persist.heap, persist) )
 
-        def comp(x,y):
+        def _comp(x,y):
             c = x[0] - y[0]
             if c < 0: return -1
             elif c > 0: return 1
@@ -129,26 +117,26 @@ class DriverLog:
                 if isinstance(y[2], Stage) and isinstance(x[2], Job): return 1
                 return 0
 
-        d.sort(cmp=comp)
+        self.time_sorted_combined_events.sort(cmp=_comp)
 
-        # Print out collected btrace events before plotting them.
-        for tup in d:
-            if isinstance(tup[2], Job):
-                print tup[2].get_driver_text(tup[3])
-            elif isinstance(tup[2], Stage):
-                print tup[2].get_driver_text(tup[3])
-            elif isinstance(tup[2], Task):
-                print tup[2].get_driver_text(tup[3])
-            elif isinstance(tup[2], Persist):
-                print tup[2].get_driver_text()
-        print "\n"
+
+    def plot(self):
+        # Plot all the collected (time,heap) points.
+        x, y = np.loadtxt(self.btracelog_fname, unpack=True, delimiter=",")
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.plot(x, y)
+        ax.set_xlabel("Time (ms)")
+        ax.set_ylabel("JVM Heap Used (MB)")
+        self.max_heap = max(y)
+        ax.text(0.05, 0.95, "Max JVM Heap Used = " + str(self.max_heap) + " (MB)", transform=ax.transAxes, verticalalignment='top')
 
         # Plot collected btrace events with different colors and size.
-        x = [tup[0] for tup in d] 
-        y = [tup[1] for tup in d]
+        x = [tup[0] for tup in self.time_sorted_combined_events] 
+        y = [tup[1] for tup in self.time_sorted_combined_events]
         c = []
         s = 50
-        for tup in d:
+        for tup in self.time_sorted_combined_events:
             if isinstance(tup[2], Job):
                 c.append('y')
             elif isinstance(tup[2], Stage):
@@ -163,27 +151,44 @@ class DriverLog:
         print colored("Red   ", 'red') + ": Task"
         print colored("Blue  ", 'blue') + ": Persist\n"
 
-        print "[ Executor Memory ]"
-        print "- Max JVM Heap Used = " + str(self.max_heap) + "(MB)"
-
-        print "\n"
+        self.print_driver_info()
 
         # By clicking each of collected btrace events on the graph,
         # you can print out text associated with the event.
         def onclick(event):
             i = event.ind[0]
-            if isinstance(d[i][2], Job):
-                print d[i][2].get_driver_text(d[i][3])
-            elif isinstance(d[i][2], Stage):
-                print d[i][2].get_driver_text(d[i][3])
-            elif isinstance(d[i][2], Task):
-                print d[i][2].get_driver_text(d[i][3])
-            elif isinstance(d[i][2], Persist):
-                print d[i][2].get_driver_text()
+            cls = self.time_sorted_combined_events[i][2]
+            if isinstance(cls, Job):
+                print cls.get_driver_text(self.time_sorted_combined_events[i][3])
+            elif isinstance(cls, Stage):
+                print cls.get_driver_text(self.time_sorted_combined_events[i][3])
+            elif isinstance(cls, Task):
+                print cls.get_driver_text(self.time_sorted_combined_events[i][3])
+            elif isinstance(cls, Persist):
+                print cls.get_driver_text()
 
         ax.scatter(x, y, 50, c, picker=True)
         fig.canvas.mpl_connect('pick_event', onclick)
         plt.show()
+
+    def print_time_sorted_combined_events(self):
+        for tup in self.time_sorted_combined_events:
+            if isinstance(tup[2], Job):
+                print tup[2].get_driver_text(tup[3])
+            elif isinstance(tup[2], Stage):
+                print tup[2].get_driver_text(tup[3])
+            elif isinstance(tup[2], Task):
+                print tup[2].get_driver_text(tup[3])
+            elif isinstance(tup[2], Persist):
+                print tup[2].get_driver_text()
+
+    def print_driver_info(self):
+        if self.environment is not None:
+            print "[ Driver Information ]"
+            print "- Driver Memory = " + self._adjust_size(self.environment.driver_memory)
+            print "- Max JVM Heap Used = " + str(self.max_heap) + "(MB)"
+            print "\n"
+
 
 
     ####
@@ -216,7 +221,9 @@ class DriverLog:
         f = open(self.eventlog_fname, "r")
         for line in f.readlines():
             j = json.loads(line)
-            if j["Event"] == "SparkListenerJobStart":
+            if j["Event"] == "SparkListenerEnvironmentUpdate":
+                self.environment = Environment(j)
+            elif j["Event"] == "SparkListenerJobStart":
                 key1 = j["Job ID"]
                 job_start[key1] = j
                 last_job = key1
@@ -293,9 +300,20 @@ class DriverLog:
             for stage in job.stages:
                 stage.compute_total_data_read_cached()
 
+    def _adjust_size(self, size):
+        l = len(str(size))
+        if l <= 3: return str(size) + "(B)"
+        elif l <= 6: return str( round(size / 1024.0, 2) ) + "(KB)"
+        else: return str( round(size / 1024.0 / 1024.0, 2) ) + "(MB)"
+
 
 import sys
 if __name__ == "__main__":
     dl = DriverLog(sys.argv[1], sys.argv[2])
     dl.parse()
+    dl.combine()
+
+    dl.print_time_sorted_combined_events()
+    print "\n"
+
     dl.plot()

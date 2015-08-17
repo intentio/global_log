@@ -1,4 +1,4 @@
-Usage: parse <drvier | executor> eventlog_file btracelog_file
+Usage: spark-glog <drvier | executor> eventlog_file btracelog_file
 
 
 Example:

@@ -30,48 +30,42 @@ class Shuffle:
 # memory_bytes_spilled for that phase.
 # ##
 class ShuffleInfo:
-    def __init__(self, shuffle_events, num_cores=2):
-        self.num_cores = num_cores
+    def __init__(self, shuffle_memory, shuffle_events):
+        self.shuffle_memory = shuffle_memory
         self.shuffles = None
         self.combine_shuffle_events(shuffle_events)
 
     def __repr__(self):
         result  = "[ Shuffle Memory Fraction ]"
+        result += "\n- Shuffle Memory = " + _adjust_size(self.shuffle_memory)
+        result += "\n- Max Memory Bytes Spilled  = " + _adjust_size(self.get_max_spill())
+        #result += "\n- Total Memory Bytes Spilled  = " + _adjust_size(self.get_total_spill())
+        result += "\n- Max Memory Bytes Released = " + _adjust_size(self.get_max_release())
+        #result += "\n- Total Memory Bytes Released = " + _adjust_size(self.get_total_release())
         for shuffle in self.shuffles:
-            result += "\nclass: " + shuffle["class"]
-            result += ", start_time: " + str(shuffle["start_time"])
+            #result += "\nclass: " + shuffle["class"]
+            #if shuffle["class"] == "map": result += "   "
+            #result += ", start_time: " + str(shuffle["start_time"])
+            result += "\n  start_time: " + str(shuffle["start_time"])
             result += ", end_time: " + str(shuffle["end_time"])
             result += ", memory_bytes_spilled: " + _adjust_size(shuffle["total_spill"])
             result += ", memory_bytes_released: " + _adjust_size(shuffle["total_release"])
-        result += "\n- Max   Memory Bytes Spilled  = " + _adjust_size(self.get_max_spill())
-        result += "\n- Total Memory Bytes Spilled  = " + _adjust_size(self.get_total_spill())
-        result += "\n- Max   Memory Bytes Released = " + _adjust_size(self.get_max_release())
-        result += "\n- Total Memory Bytes Released = " + _adjust_size(self.get_total_release())
         return result
 
     def combine_shuffle_events(self, shuffle_events):
         self.shuffles = []
         shuffle = None
-        in_shuffle_phase = False
-        end_count = 0
 
         for event in shuffle_events:
-            if event.method == "start" and in_shuffle_phase is False:
+            if event.method == "start":
                 shuffle = {"class":event.cls, "start_time":event.time, "end_time":None, "total_spill":0, "total_release":0}
-                in_shuffle_phase = True
             elif event.method == "spill":
                 shuffle["total_spill"] += event.size
             elif event.method == "release":
                 shuffle["total_release"] += event.size
             elif event.method == "end":
-                end_count += 1
-                if end_count == self.num_cores:
-                    shuffle["end_time"] = event.time
-                    in_shuffle_phase = False
-                    self.shuffles.append(shuffle)
-                    end_count = 0
-        for shuffle in self.shuffles:
-            shuffle["total_spill"] /= self.num_cores
+                shuffle["end_time"] = event.time
+                self.shuffles.append(shuffle)
 
     def get_max_spill(self):
         l = [shuffle["total_spill"] for shuffle in self.shuffles]
@@ -96,8 +90,6 @@ class ShuffleInfo:
         if len(l) == 0:
             return 0
         return sum(l)
-
-
 
 def _adjust_size(size):
     l = len(str(size))
