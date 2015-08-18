@@ -20,6 +20,8 @@ function install {
         read
         if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
             sudo apt-get install $1
+        else
+            exit
         fi
         echo ""
     fi

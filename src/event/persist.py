@@ -1,23 +1,24 @@
+from common import *
 
 ##
 # Persist class comprises information from btracelog.
 ##
 class Persist:
-    # time,heap,persist,<memory|disk|offheap>,size
-    def __init__(self, args):
-        self.time = long(args[0])
-        self.heap = float(args[1])
-        self.storage = args[3]
-        self.size = long(args[4])
+    # common,persist,<memory|disk|offheap>,size
+    def __init__(self, common, args):
+        self.common = common
+        assert args[0] == "persist"
+        self.storage = args[1]
+        self.size = long(args[2])
 
     def __repr__(self):
         return "[Persist " + str(self.storage) + "] " + _adjust_size(self.size)
 
     def get_driver_text(self):
-        return str(self.time) + "(ms), " + str(self.heap) + "(MB) -- " + str(self)
+        return str(self.common.time) + "(ms), " + str(self.common.total) + "(MB) -- " + str(self)
 
     def get_executor_text(self):
-        return str(self.time) + "(ms), " + str(self.heap) + "(MB) -- " + str(self)
+        return str(self.common.time) + "(ms), " + str(self.common.total) + "(MB) -- " + str(self)
 
 class CacheInfo:
     def __init__(self, storage_memory, persist_events):

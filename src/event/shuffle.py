@@ -1,19 +1,20 @@
+from common import *
+
 ##
 # Shuffle class comprises information from btracelog.
 ##
 class Shuffle:
-    # time,heap,shuffle,<map|sorter>,<start|end>
-    # time,heap,shuffle,<map|sorter>,spill,size
-    # time,heap,shuffle,manager,release,size
-    def __init__(self, args):
-        self.time = long(args[0])
-        self.heap = float(args[1])
-        assert args[2] == "shuffle"
-        self.cls = args[3]
-        self.method = args[4]
+    # common,shuffle,<map|sorter>,<start|end>
+    # common,shuffle,<map|sorter>,spill,size
+    # common,shuffle,manager,release,size
+    def __init__(self, common, args):
+        self.common = common
+        assert args[0] == "shuffle"
+        self.cls = args[1]
+        self.method = args[2]
         self.size = None
         if self.method == "spill" or self.method == "release":
-            self.size = long(args[5])
+            self.size = long(args[3])
 
     def __repr__(self):
         result =  "[Shuffle " + self.cls + " " + self.method + "]"
@@ -22,7 +23,7 @@ class Shuffle:
         return result
 
     def get_executor_text(self):
-        return str(self.time) + "(ms), " + str(self.heap) + "(MB) -- " + str(self)
+        return str(self.common.time) + "(ms), " + str(self.common.total) + "(MB) -- " + str(self)
 
 ##
 # ShuffleInfo class combines shuffle events and divide them into shuffle
@@ -58,13 +59,13 @@ class ShuffleInfo:
 
         for event in shuffle_events:
             if event.method == "start":
-                shuffle = {"class":event.cls, "start_time":event.time, "end_time":None, "total_spill":0, "total_release":0}
+                shuffle = {"class":event.cls, "start_time":event.common.time, "end_time":None, "total_spill":0, "total_release":0}
             elif event.method == "spill":
                 shuffle["total_spill"] += event.size
             elif event.method == "release":
                 shuffle["total_release"] += event.size
             elif event.method == "end":
-                shuffle["end_time"] = event.time
+                shuffle["end_time"] = event.common.time
                 self.shuffles.append(shuffle)
 
     def get_max_spill(self):

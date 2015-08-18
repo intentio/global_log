@@ -1,6 +1,8 @@
 import json
 import re
 
+from common import *
+
 ##
 # Task class comprises information from both Spark's eventlog and btracelog.
 ##
@@ -39,14 +41,12 @@ class Task:
         self.finish_time = end["Task Info"]["Finish Time"]
 
         # BTrace Information
-        self.start_time = None
-        self.start_heap = None
+        self.start_common = None
         self.start_minor_gc_count = None
         self.start_minor_gc_time = None
         self.start_major_gc_count = None
         self.start_major_gc_time = None
-        self.end_time = None
-        self.end_heap = None
+        self.end_common = None
         self.end_minor_gc_count = None
         self.end_minor_gc_time = None
         self.end_major_gc_count = None
@@ -70,7 +70,7 @@ class Task:
     def get_driver_text(self, status):
         result = ""
         if status == "start":
-            result += str(self.start_time) + "(ms), " + str(self.start_heap) + "(MB) -- " + self._new_repr(status)
+            result += str(self.start_common.time) + "(ms), " + str(self.start_common.heap) + "(MB) -- " + self._new_repr(status)
             flag = False
             if self.input_metrics != None:
                 result += " " + str(self.input_metrics)
@@ -79,7 +79,7 @@ class Task:
                 if flag: result += ", " + str(self.shuffle_read_metrics)
                 else: result += " " + str(self.shuffle_read_metrics)
         elif status == "end":
-            result += str(self.end_time) + "(ms), " + str(self.end_heap) + "(MB) -- " + self._new_repr(status)
+            result += str(self.end_common.time) + "(ms), " + str(self.end_common.total) + "(MB) -- " + self._new_repr(status)
             if self.shuffle_write_metrics != None:
                 result += " " + str(self.shuffle_write_metrics)
         return result
@@ -87,7 +87,7 @@ class Task:
     def get_executor_text(self, status):
         result = ""
         if status == "start":
-            result += str(self.start_time) + "(ms), " + str(self.start_heap) + "(MB) -- " + self._new_repr(status)
+            result += str(self.start_common.time) + "(ms), " + str(self.start_common.heap) + "(MB) -- " + self._new_repr(status)
             flag = False
             if self.input_metrics != None:
                 result += " " + str(self.input_metrics)
@@ -97,7 +97,7 @@ class Task:
                 else: result += " " + str(self.shuffle_read_metrics)
 
         elif status == "end":
-            result += str(self.end_time) + "(ms), " + str(self.end_heap) + "(MB) -- " + self._new_repr(status)
+            result += str(self.end_common.time) + "(ms), " + str(self.end_common.total) + "(MB) -- " + self._new_repr(status)
             flag = False
             if self.shuffle_write_metrics != None:
                 result += " " + str(self.shuffle_write_metrics)

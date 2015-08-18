@@ -1,6 +1,8 @@
 import json
 import re
 
+from common import *
+
 ##
 # Job class comprises information from both Spark's eventlog and btracelog.
 ##
@@ -15,10 +17,8 @@ class Job:
         self.stages = []
 
         # BTrace Information
-        self.start_time = None
-        self.start_heap = None
-        self.end_time = None
-        self.end_heap = None
+        self.start_common = None
+        self.end_common = None
 
     def __repr__(self):
         return "[Job " + str(self.job_id) + "]"
@@ -32,6 +32,6 @@ class Job:
 
     def get_driver_text(self, status):
         if status == "start":
-            return str(self.start_time) + "(ms), " + str(self.start_heap) + "(MB) -- " + self._new_repr(status)
+            return str(self.start_common.time) + "(ms), " + str(self.start_common.total) + "(MB) -- " + self._new_repr(status)
         elif status == "end":
-            return str(self.end_time) + "(ms), " + str(self.end_heap) + "(MB) -- " + self._new_repr(status)
+            return str(self.end_common.time) + "(ms), " + str(self.end_common.total) + "(MB) -- " + self._new_repr(status)

@@ -2,6 +2,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 from termcolor import colored
 
+from event.common import *
 from event.environment import *
 from event.job import *
 from event.stage import *
@@ -18,103 +19,97 @@ class DriverLog:
         self.persists = []
         self.time_sorted_combined_events = []
 
-        self.max_heap = None
+        self.max_memory = None
 
     def parse(self):
         self.parse_eventlog()
         self.parse_btracelog()
 
     def parse_btracelog(self):
+        common_length = 4
         if len(self.jobs) == 0: return
         j = 0
         s = 0
         f = open(self.btracelog_fname, "r")
         for line in f.readlines():
             lst = line[:-1].split(",")
-            if len(lst) <= 2:
+            if len(lst) <= 4:
                 continue
-            time = long(lst[0])  # vm up time (ms)
-            heap = float(lst[1])  # jvm heap used (MB)
-            event = lst[2]
+            common = Common(lst[:common_length])
+            event = lst[common_length]
             if event == "job":
                 job = self.jobs[j]
-                job_id = int(lst[4])
+                job_id = int(lst[common_length+2])
                 assert job.job_id == job_id
-                if lst[3] == "start":
+                if lst[common_length+1] == "start":
                     if job.job_id == job_id:
-                        job.start_time = time
-                        job.start_heap = heap
+                        job.start_common = common
                         s = 0
-                elif lst[3] == "end":
+                elif lst[common_length+1] == "end":
                     if job.job_id == job_id:
-                        job.end_time = time
-                        job.end_heap = heap
+                        job.end_common = common
                         j += 1
             elif event == "stage":
                 job = self.jobs[j]
                 stage = job.stages[s]
-                if lst[3] == "start":
-                    stage.start_time = time
-                    stage.start_heap = heap
-                elif lst[3] == "end":
-                    stage.end_time = time
-                    stage.end_heap = heap
+                if lst[common_length+1] == "start":
+                    stage.start_common = common
+                elif lst[common_length+1] == "end":
+                    stage.end_common = common
                     s += 1
             elif event == "task":
                 job = self.jobs[j]
                 stage = job.stages[s]
-                stage_id = int(lst[4])
-                stage_attempt_id = int(lst[5])
-                partition_index = int(lst[6].split(".")[0])
-                task_attempt_id = int(lst[6].split(".")[1])
+                stage_id = int(lst[common_length+2])
+                stage_attempt_id = int(lst[common_length+3])
+                partition_index = int(lst[common_length+4].split(".")[0])
+                task_attempt_id = int(lst[common_length+4].split(".")[1])
                 assert stage.stage_id == stage_id
                 assert stage.stage_attempt_id == stage_attempt_id
-                if lst[3] == "start":
+                if lst[common_length+1] == "start":
                     for task in stage.tasks:
                         if task.task_attempt_id == task_attempt_id and task.partition_index == partition_index:
-                            task.start_time = time
-                            task.start_heap = heap
-                elif lst[3] == "end":
+                            task.start_common = common
+                elif lst[common_length+1] == "end":
                     for task in stage.tasks:
                         if task.task_attempt_id == task_attempt_id and task.partition_index == partition_index:
-                            task.end_time = time
-                            task.end_heap = heap
+                            task.end_common = common
             elif event == "persist":
-                self.persists.append(Persist(lst))
+                self.persists.append(Persist(common, lst[common_length:]))
         f.close()
 
     def combine(self):
         # Collect all the btrace events except periodic alarm function.
         self.time_sorted_combined_events = []
         for job in self.jobs:
-            self.time_sorted_combined_events.append( (job.start_time, job.start_heap, job, "start") )
-            self.time_sorted_combined_events.append( (job.end_time, job.end_heap, job, "end") )
+            self.time_sorted_combined_events.append( (job.start_common.time, job, "start") )
+            self.time_sorted_combined_events.append( (job.end_common.time, job, "end") )
             for stage in job.stages:
-                self.time_sorted_combined_events.append( (stage.start_time, stage.start_heap, stage, "start") )
-                self.time_sorted_combined_events.append( (stage.end_time, stage.end_heap, stage, "end") )
+                self.time_sorted_combined_events.append( (stage.start_common.time, stage, "start") )
+                self.time_sorted_combined_events.append( (stage.end_common.time, stage, "end") )
                 for task in stage.tasks:
-                    self.time_sorted_combined_events.append( (task.start_time, task.start_heap, task, "start") )
-                    self.time_sorted_combined_events.append( (task.end_time, task.end_heap, task, "end") )
+                    self.time_sorted_combined_events.append( (task.start_common.time, task, "start") )
+                    self.time_sorted_combined_events.append( (task.end_common.time, task, "end") )
         for persist in self.persists:
-            self.time_sorted_combined_events.append( (persist.time, persist.heap, persist) )
+            self.time_sorted_combined_events.append( (persist.common.time, persist) )
 
         def _comp(x,y):
             c = x[0] - y[0]
             if c < 0: return -1
             elif c > 0: return 1
             else:
-                if isinstance(x[2], Persist) and isinstance(y[2], Task): return -1
-                if isinstance(x[2], Persist) and isinstance(y[2], Stage): return -1
-                if isinstance(x[2], Persist) and isinstance(y[2], Job): return -1
-                if isinstance(x[2], Task) and isinstance(y[2], Stage): return -1
-                if isinstance(x[2], Task) and isinstance(y[2], Job): return -1
-                if isinstance(x[2], Stage) and isinstance(y[2], Job): return -1
-                if isinstance(y[2], Persist) and isinstance(x[2], Task): return 1
-                if isinstance(y[2], Persist) and isinstance(x[2], Stage): return 1
-                if isinstance(y[2], Persist) and isinstance(x[2], Job): return 1
-                if isinstance(y[2], Task) and isinstance(x[2], Stage): return 1
-                if isinstance(y[2], Task) and isinstance(x[2], Job): return 1
-                if isinstance(y[2], Stage) and isinstance(x[2], Job): return 1
+                if isinstance(x[1], Persist) and isinstance(y[1], Task): return -1
+                if isinstance(x[1], Persist) and isinstance(y[1], Stage): return -1
+                if isinstance(x[1], Persist) and isinstance(y[1], Job): return -1
+                if isinstance(x[1], Task) and isinstance(y[1], Stage): return -1
+                if isinstance(x[1], Task) and isinstance(y[1], Job): return -1
+                if isinstance(x[1], Stage) and isinstance(y[1], Job): return -1
+                if isinstance(y[1], Persist) and isinstance(x[1], Task): return 1
+                if isinstance(y[1], Persist) and isinstance(x[1], Stage): return 1
+                if isinstance(y[1], Persist) and isinstance(x[1], Job): return 1
+                if isinstance(y[1], Task) and isinstance(x[1], Stage): return 1
+                if isinstance(y[1], Task) and isinstance(x[1], Job): return 1
+                if isinstance(y[1], Stage) and isinstance(x[1], Job): return 1
                 return 0
 
         self.time_sorted_combined_events.sort(cmp=_comp)
@@ -122,28 +117,34 @@ class DriverLog:
 
     def plot(self):
         # Plot all the collected (time,heap) points.
-        x, y = np.loadtxt(self.btracelog_fname, unpack=True, delimiter=",")
+        x, y = np.loadtxt(self.btracelog_fname, unpack=True, delimiter=",", usecols=(0,3))
         fig = plt.figure()
         ax = fig.add_subplot(111)
         ax.plot(x, y)
         ax.set_xlabel("Time (ms)")
-        ax.set_ylabel("JVM Heap Used (MB)")
-        self.max_heap = max(y)
-        ax.text(0.05, 0.95, "Max JVM Heap Used = " + str(self.max_heap) + " (MB)", transform=ax.transAxes, verticalalignment='top')
+        ax.set_ylabel("JVM Memory Used (MB)")
+        self.max_memory = max(y)
+        ax.text(0.05, 0.95, "Max JVM Memory Used = " + str(self.max_memory) + " (MB)", transform=ax.transAxes, verticalalignment='top')
 
         # Plot collected btrace events with different colors and size.
-        x = [tup[0] for tup in self.time_sorted_combined_events] 
-        y = [tup[1] for tup in self.time_sorted_combined_events]
+        x = [tup[0] for tup in self.time_sorted_combined_events]  # time list
+        y = []  # memory list
+        for tup in self.time_sorted_combined_events:
+            if isinstance(tup[1], Job) or isinstance(tup[1], Stage) or isinstance(tup[1], Task):
+                if tup[2] == "start": y.append(tup[1].start_common.total)
+                elif tup[2] == "end": y.append(tup[1].end_common.total)
+            else:
+                y.append(tup[1].common.total)
         c = []
         s = 50
         for tup in self.time_sorted_combined_events:
-            if isinstance(tup[2], Job):
+            if isinstance(tup[1], Job):
                 c.append('y')
-            elif isinstance(tup[2], Stage):
+            elif isinstance(tup[1], Stage):
                 c.append('g')
-            elif isinstance(tup[2], Task):
+            elif isinstance(tup[1], Task):
                 c.append('r')
-            elif isinstance(tup[2], Persist):
+            elif isinstance(tup[1], Persist):
                 c.append('b')
 
         print colored("Yellow", 'yellow') + ": Job"
@@ -157,13 +158,13 @@ class DriverLog:
         # you can print out text associated with the event.
         def onclick(event):
             i = event.ind[0]
-            cls = self.time_sorted_combined_events[i][2]
+            cls = self.time_sorted_combined_events[i][1]
             if isinstance(cls, Job):
-                print cls.get_driver_text(self.time_sorted_combined_events[i][3])
+                print cls.get_driver_text(self.time_sorted_combined_events[i][2])
             elif isinstance(cls, Stage):
-                print cls.get_driver_text(self.time_sorted_combined_events[i][3])
+                print cls.get_driver_text(self.time_sorted_combined_events[i][2])
             elif isinstance(cls, Task):
-                print cls.get_driver_text(self.time_sorted_combined_events[i][3])
+                print cls.get_driver_text(self.time_sorted_combined_events[i][2])
             elif isinstance(cls, Persist):
                 print cls.get_driver_text()
 
@@ -173,22 +174,34 @@ class DriverLog:
 
     def print_time_sorted_combined_events(self):
         for tup in self.time_sorted_combined_events:
-            if isinstance(tup[2], Job):
-                print tup[2].get_driver_text(tup[3])
-            elif isinstance(tup[2], Stage):
-                print tup[2].get_driver_text(tup[3])
-            elif isinstance(tup[2], Task):
-                print tup[2].get_driver_text(tup[3])
-            elif isinstance(tup[2], Persist):
-                print tup[2].get_driver_text()
+            if isinstance(tup[1], Job):
+                print tup[1].get_driver_text(tup[2])
+            elif isinstance(tup[1], Stage):
+                print tup[1].get_driver_text(tup[2])
+            elif isinstance(tup[1], Task):
+                print tup[1].get_driver_text(tup[2])
+            elif isinstance(tup[1], Persist):
+                print tup[1].get_driver_text()
 
     def print_driver_info(self):
+        temp = ""
+        for job in self.jobs:
+            temp += "Job " + str(job.job_id)
+            for stage in job.stages:
+                temp += "\n  Stage " + str(stage.stage_id) + "\n    Task [ "
+                for task in stage.tasks:
+                    if task.start_common != None and task.end_common != None:
+                        temp += str(task.task_id) + ","
+                temp = temp[:-1]
+                temp += " ]"
+        print temp
+        print ""
+
         if self.environment is not None:
             print "[ Driver Information ]"
             print "- Driver Memory = " + self._adjust_size(self.environment.driver_memory)
-            print "- Max JVM Heap Used = " + str(self.max_heap) + "(MB)"
+            print "- Max Driver Memory Used = " + str(self.max_memory) + "(MB)"
             print "\n"
-
 
 
     ####

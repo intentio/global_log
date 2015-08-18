@@ -6,23 +6,26 @@ import org.apache.spark.scheduler.StageInfo;
 import org.apache.spark.scheduler.TaskInfo;
 
 /**
+ * Common
+ * - time(ms),heap(MB),nonheap(MB),total(MB)
+ *
  * Job start/end
- * - time(ms),heap(MB),job,start,jobId
- * - time(ms),heap(MB),job,end,jobId
+ * - Common,job,start,jobId
+ * - Common,job,end,jobId
  *
  * Stage start/end
- * - time(ms),heap(MB),stage,start
- * - time(ms),heap(MB),stage,end
+ * - Common,stage,start
+ * - Common,stage,end
  *
  * Task start/end
- * - time(ms),heap(MB),task,start,stageId,stageAttemptId,partitionIndex.taskAttemptId
- * - time(ms),heap(MB),task,end,stageId,stageAttemptId,partitionIndex.taskAttempt
+ * - Common,task,start,stageId,stageAttemptId,partitionIndex.taskAttemptId
+ * - Common,task,end,stageId,stageAttemptId,partitionIndex.taskAttempt
  *
  * Persist memory/disk/offheap
- * - time(ms),heap(MB),persist,memory,size(B)
+ * - Common,persist,memory,size(B)
  *
  * Alarm
- * - time(ms),heap(MB)
+ * - Common
  */
 
 @BTrace(unsafe = true)
@@ -35,8 +38,7 @@ public class DriverProbe {
     public static void job_start(AnyType[] args) {
         /* args[0] Int jobId
          */
-        // time,heap(MB),job,start,jobId
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",job,start," + args[0]);
+        println(common() + ",job,start," + args[0]);
     }
     @OnMethod(  // End
         clazz    = "org.apache.spark.scheduler.SparkListenerJobEnd",
@@ -45,8 +47,7 @@ public class DriverProbe {
     public static void job_end(AnyType[] args) {
         /* args[0] Int jobId
          */
-        // time,heap(MB),job,end,jobId
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",job,end," + args[0]);
+        println(common() + ",job,end," + args[0]);
     }
 
     /* Stage */
@@ -55,16 +56,14 @@ public class DriverProbe {
         method   = "<init>",
         location = @Location(value=Kind.ENTRY))
     public static void stage_submitted(AnyType[] args) {
-        // time,heap(MB),stage,start
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",stage,start");
+        println(common() + ",stage,start");
     }
     @OnMethod(  // End
         clazz    = "org.apache.spark.scheduler.SparkListenerStageCompleted",
         method   = "<init>",
         location = @Location(value=Kind.ENTRY))
     public static void stage_completed(AnyType[] args) {
-        // time,heap(MB),stage,end
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",stage,end");
+        println(common() + ",stage,end");
     }
 
     /* Task */
@@ -73,24 +72,22 @@ public class DriverProbe {
         method   = "<init>",
         location = @Location(value=Kind.ENTRY))
     public static void task_start(AnyType[] args) {
-        // time,heap(MB),task,start,stageId,stageAttemptId,partitionIndex.taskAttemptId
         Object stageId = args[0];
         Object stageAttemptId = args[1];
         TaskInfo taskInfo = (TaskInfo) args[2];
 
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",task,start," + stageId + "," + stageAttemptId + "," + taskInfo.id());
+        println(common() + ",task,start," + stageId + "," + stageAttemptId + "," + taskInfo.id());
     }
     @OnMethod(  // End
         clazz    = "org.apache.spark.scheduler.SparkListenerTaskEnd",
         method   = "<init>",
         location = @Location(value=Kind.ENTRY))
     public static void task_end(@Self AnyType self, AnyType[] args) {
-        // time,heap(MB),task,end,stageId,stageAttemptId,partitionIndex.taskAttemptId
         Object stageId = args[0];
         Object stageAttemptId = args[1];
         TaskInfo taskInfo = (TaskInfo) args[4];
 
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",task,end," + stageId + "," + stageAttemptId + "," + taskInfo.id());
+        println(common() + ",task,end," + stageId + "," + stageAttemptId + "," + taskInfo.id());
     }
 
     /* Persist */
@@ -101,20 +98,25 @@ public class DriverProbe {
     public static void MemoryEntry_init_entry(@Self AnyType self, AnyType[] args) {
         /* args[1] Long size
          */
-        // time,heap(MB),persist,memory,size
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",persist,memory," + args[1]);
+        println(common() + ",persist,memory," + args[1]);
     }
 
     /* Alarm for Heap Usage */
     @OnTimer(10)
     public static void alarm() {
-        println(Sys.VM.vmUptime() + "," +  heapUsed());
+        println(common());
     }
 
-    private static double heapUsed() {
-        double used = heapUsage().getUsed() / 1024.0 / 1024.0;  // MB
-        used = (double)(Math.round(used * 100.0)) / 100.0;
-        return used;
+    private static double convert(long m) {
+        return (double)(Math.round( (m / 1024.0 / 1024.0) * 100.0)) / 100.0;  // B -> MB with double precision
+    }
+
+    /* Every event needs to print out this string.
+     * time,heap(MB),nonheap(MB),total(MB) */
+    private static String common() {
+        long heap = heapUsage().getUsed();
+        long nonheap = nonHeapUsage().getUsed();
+        return String.valueOf(Sys.VM.vmUptime()) + "," + String.valueOf(convert(heap)) + "," + String.valueOf(convert(nonheap)) + "," + String.valueOf(convert(heap + nonheap));
     }
 }
 
@@ -123,6 +125,6 @@ btracec -cp "$SPARK_HOME/lib/spark-assembly-1.4.0-hadoop2.6.0.jar:$SCALA_HOME/li
 
 spark_submit \
 --class MemoryOnly \
---driver-java-options "-javaagent:$BTRACE_HOME/build/btrace-agent.jar=unsafe=true,scriptOutputFile=/home/ec2-user/out.trace,script=/home/ec2-user/DriverProbe.class" \
+--driver-java-options "-javaagent:$BTRACE_HOME/build/btrace-agent.jar=unsafe=true,scriptOutputFile=/home/ec2-user/btracelog,script=/home/ec2-user/DriverProbe.class" \
 sparkapp_2.11-0.1.jar
 */

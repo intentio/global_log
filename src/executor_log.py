@@ -2,6 +2,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 from termcolor import colored
 
+from event.common import *
 from event.environment import *
 from event.job import *
 from event.stage import *
@@ -21,7 +22,7 @@ class ExecutorLog:
         self.time_sorted_combined_events = []
 
         self.executor_id = None
-        self.max_heap = None
+        self.max_memory = None
         self.num_cores = num_cores
 
     def parse(self):
@@ -29,6 +30,7 @@ class ExecutorLog:
         self.parse_btracelog()
 
     def parse_btracelog(self):
+        common_length = 4
         if len(self.jobs) == 0: return
         j = 0
         s = 0
@@ -41,35 +43,32 @@ class ExecutorLog:
         f = open(self.btracelog_fname, "r")
         for line in f.readlines():
             lst = line[:-1].split(",")
-            if len(lst) <= 2:
+            if len(lst) <= 4:
                 continue
-            time = long(lst[0])  # vm up time (ms)
-            heap = float(lst[1])  # jvm heap used (MB)
-            event = lst[2]
+            common = Common(lst[:common_length])
+            event = lst[common_length]
             if event == "task":
-                task_id = int(lst[4])
+                task_id = int(lst[common_length+2])
                 assert tasks.has_key(task_id)
                 task = tasks[task_id]
                 self.executor_id = task.executor_id
-                if lst[3] == "start":
-                    task.start_time = time
-                    task.start_heap = heap
-                    task.start_minor_gc_count = long(lst[5])
-                    task.start_minor_gc_time = long(lst[6])
-                    task.start_major_gc_count = long(lst[7])
-                    task.start_major_gc_time = long(lst[8])
-                elif lst[3] == "end":
-                    task.end_time = time
-                    task.end_heap = heap
-                    task.end_minor_gc_count = long(lst[5])
-                    task.end_minor_gc_time = long(lst[6])
-                    task.end_major_gc_count = long(lst[7])
-                    task.end_major_gc_time = long(lst[8])
+                if lst[common_length+1] == "start":
+                    task.start_common = common
+                    task.start_minor_gc_count = long(lst[common_length+3])
+                    task.start_minor_gc_time = long(lst[common_length+4])
+                    task.start_major_gc_count = long(lst[common_length+5])
+                    task.start_major_gc_time = long(lst[common_length+6])
+                elif lst[common_length+1] == "end":
+                    task.end_common = common
+                    task.end_minor_gc_count = long(lst[common_length+3])
+                    task.end_minor_gc_time = long(lst[common_length+4])
+                    task.end_major_gc_count = long(lst[common_length+5])
+                    task.end_major_gc_time = long(lst[common_length+6])
                     task.compute_gc_count_time()
             elif event == "persist":
-                self.persists.append(Persist(lst))
+                self.persists.append(Persist(common, lst[common_length:]))
             elif event == "shuffle":
-                temp_shuffles.append(Shuffle(lst))
+                temp_shuffles.append(Shuffle(common, lst[common_length:]))
         f.close()
         self._truncate_duplicate_shuffle_events(temp_shuffles)
 
@@ -103,14 +102,15 @@ class ExecutorLog:
         for job in self.jobs:
             for stage in job.stages:
                 for task in stage.tasks:
-                    if task.start_time != None and task.end_time != None:
-                        self.time_sorted_combined_events.append( (task.start_time, task.start_heap, task, "start") )
-                        self.time_sorted_combined_events.append( (task.end_time, task.end_heap, task, "end") )
+                    if task.start_common != None and task.end_common != None:
+                        self.time_sorted_combined_events.append( (task.start_common.time, task, "start") )
+                        self.time_sorted_combined_events.append( (task.end_common.time, task, "end") )
+
         for persist in self.persists:
-            self.time_sorted_combined_events.append( (persist.time, persist.heap, persist) )
+            self.time_sorted_combined_events.append( (persist.common.time, persist) )
 
         for shuffle in self.shuffles:
-            self.time_sorted_combined_events.append( (shuffle.time, shuffle.heap, shuffle) )
+            self.time_sorted_combined_events.append( (shuffle.common.time, shuffle) )
 
         def _comp(x,y):
             c = x[0] - y[0]
@@ -122,28 +122,34 @@ class ExecutorLog:
 
 
     def plot(self):
-        # Plot all the collected (time,heap) points.
-        x, y = np.loadtxt(self.btracelog_fname, unpack=True, delimiter=",")
+        # Plot all the collected (time,memory) points.
+        x, y = np.loadtxt(self.btracelog_fname, unpack=True, delimiter=",", usecols=(0,3))
         fig = plt.figure()
         ax = fig.add_subplot(111)
         ax.plot(x, y)
         ax.set_xlabel("Time (ms)")
-        ax.set_ylabel("JVM Heap Used (MB)")
-        self.max_heap = max(y)
-        ax.text(0.05, 0.95, "Max JVM Heap Used = " + str(self.max_heap) + " (MB)", transform=ax.transAxes, verticalalignment='top')
+        ax.set_ylabel("JVM Memory Used (MB)")
+        self.max_memory = max(y)
+        ax.text(0.05, 0.95, "Max JVM Memory Used = " + str(self.max_memory) + " (MB)", transform=ax.transAxes, verticalalignment='top')
 
         # Plot collected events with different colors.
         x = [tup[0] for tup in self.time_sorted_combined_events]  # time list
-        y = [tup[1] for tup in self.time_sorted_combined_events]  # heap list
+        y = []  # memory list
+        for tup in self.time_sorted_combined_events:
+            if isinstance(tup[1], Job) or isinstance(tup[1], Stage) or isinstance(tup[1], Task):
+                if tup[2] == "start": y.append(tup[1].start_common.total)
+                elif tup[2] == "end": y.append(tup[1].end_common.total)
+            else:
+                y.append(tup[1].common.total)
         c = []  # color list
         s = 50
         for tup in self.time_sorted_combined_events:
-            if isinstance(tup[2], Task):
+            if isinstance(tup[1], Task):
                 c.append('r')
-            elif isinstance(tup[2], Persist):
+            elif isinstance(tup[1], Persist):
                 c.append('b')
-            elif isinstance(tup[2], Shuffle):
-                if tup[2].method == "start" or tup[2].method == "end":
+            elif isinstance(tup[1], Shuffle):
+                if tup[1].method == "start" or tup[1].method == "end":
                     c.append('g')
                 else:
                     c.append('y')
@@ -159,9 +165,9 @@ class ExecutorLog:
         # you can print out text associated with the event.
         def onclick(event):
             i = event.ind[0]
-            cls = self.time_sorted_combined_events[i][2]
+            cls = self.time_sorted_combined_events[i][1]
             if isinstance(cls, Task):
-                print cls.get_executor_text(self.time_sorted_combined_events[i][3])
+                print cls.get_executor_text(self.time_sorted_combined_events[i][2])
             elif isinstance(cls, Persist):
                 print cls.get_executor_text()
             elif isinstance(cls, Shuffle):
@@ -173,24 +179,51 @@ class ExecutorLog:
 
     def print_time_sorted_combined_events(self):
         for tup in self.time_sorted_combined_events:
-            if isinstance(tup[2], Task):
-                print tup[2].get_executor_text(tup[3])
+            if isinstance(tup[1], Task):
+                print tup[1].get_executor_text(tup[2])
             else:  # Persist, Shuffle
-                print tup[2].get_executor_text()
+                print tup[1].get_executor_text()
 
     def print_executor_info(self):
+        temp = ""
+        for job in self.jobs:
+            temp += "Job " + str(job.job_id)
+            for stage in job.stages:
+                temp += "\n  Stage " + str(stage.stage_id) + "\n    Task [ "
+                for task in stage.tasks:
+                    if task.start_common != None and task.end_common != None:
+                        temp += str(task.task_id) + ","
+                temp = temp[:-1]
+                temp += " ]"
+        print temp
+        print ""
+
         if self.environment is not None:
             print "[ Executor Information ]"
             print "- Executor ID: " + str(self.executor_id)
             print "- Executor Memory = " + self._adjust_size(self.environment.executor_memory)
-            print "- Max JVM Heap Used = " + str(self.max_heap) + "(MB)"
+            print "- Max Executor Memory Used = " + str(self.max_memory) + "(MB)"
             print ""
+
             cinfo = CacheInfo(self.environment.storage_memory, self.persists)
             print cinfo
             print ""
             sinfo = ShuffleInfo(self.environment.shuffle_memory, self.shuffles)
             print sinfo
-            print "\n"
+            print ""
+
+        for i in range(len(self.time_sorted_combined_events)):
+            j = len(self.time_sorted_combined_events) - i - 1
+            tup = self.time_sorted_combined_events[j]
+            if isinstance(tup[1], Task):
+                task = tup[1]
+                break
+        print "[ Garbage Collector Information ]"
+        print "- Minor GC Count = " + str(task.end_minor_gc_count)
+        print "- Minor GC Time  = " + str(task.end_minor_gc_time) + "(ms)"
+        print "- Major GC Count = " + str(task.end_major_gc_count)
+        print "- Major GC Time  = " + str(task.end_major_gc_time) + "(ms)"
+        print "\n"
 
 
     ####

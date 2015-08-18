@@ -9,24 +9,27 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
+ * Common
+ * - time(ms),heap(MB),nonheap(MB),total(MB)
+ *
  * Task start/end
- * - time(ms),heap(MB),task,start,taskId,GC
- * - time(ms),heap(MB),task,end,taskId,GC
+ * - Common,task,start,taskId,GC
+ * - Common,task,end,taskId,GC
  *
  * Persist memory/disk/offheap
- * - time(ms),heap(MB),persist,memory,size(B)
+ * - Common,persist,memory,size(B)
  *
  * Shuffle start/end/spill
- * - time(ms),heap(MB),shuffle,map,start
- * - time(ms),heap(MB),shuffle,sorter,start
- * - time(ms),heap(MB),shuffle,map,end
- * - time(ms),heap(MB),shuffle,sorter,end
- * - time(ms),heap(MB),shuffle,map,spill,size(B)
- * - time(ms),heap(MB),shuffle,sorter,spill,size(B)
- * - time(ms),heap(MB),shuffle,manager,release,size(B)
+ * - Common,shuffle,map,start
+ * - Common,shuffle,sorter,start
+ * - Common,shuffle,map,end
+ * - Common,shuffle,sorter,end
+ * - Common,shuffle,map,spill,size(B)
+ * - Common,shuffle,sorter,spill,size(B)
+ * - Common,shuffle,manager,release,size(B)
  *
  * Alarm
- * - time(ms),heap(MB)
+ * - Common
  *
  * GC
  * - minorcount,minortime(ms),majorcount,majortime(ms)
@@ -43,12 +46,10 @@ public class ExecutorProbe {
         /* args[0] Int taskId
          * args[1] TaskState (RUNNING, FINISHED, FAILED, KILLED)
          */
-        // time,heap(MB),task,start,taskId,GC
-        // time,heap(MB),task,end,taskId,GC
         if (args[1].toString() ==  "RUNNING")
-            println(Sys.VM.vmUptime() + "," + heapUsed() + ",task,start," + args[0] + "," + getGC());
+            println(common() + ",task,start," + args[0] + "," + getGC());
         else
-            println(Sys.VM.vmUptime() + "," + heapUsed() + ",task,end," + args[0] + "," + getGC());
+            println(common() + ",task,end," + args[0] + "," + getGC());
     }
 
     /* Persist */
@@ -59,8 +60,7 @@ public class ExecutorProbe {
     public static void MemoryEntry_init_entry(@Self AnyType self, AnyType[] args) {
         /* args[1] Long size
          */
-        // time,heap(MB),persist,memory,size(B)
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",persist,memory," + args[1]);
+        println(common() + ",persist,memory," + args[1]);
     }
 
     /* Shuffle */
@@ -69,32 +69,28 @@ public class ExecutorProbe {
         method   = "insertAll",
         location = @Location(value=Kind.ENTRY))
     public static void ExternalAppendOnlyMap_insertAll_entry() {
-        // time,heap(MB),shuffle,map,start
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,map,start");
+        println(common() + ",shuffle,map,start");
     }
     @OnMethod(  // Start
         clazz    = "org.apache.spark.util.collection.ExternalSorter",
         method   = "insertAll",
         location = @Location(value=Kind.ENTRY))
     public static void ExternalSorter_insertAll_entry() {
-        // time,heap(MB),shuffle,sorter,start
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,sorter,start");
+        println(common() + ",shuffle,sorter,start");
     }
     @OnMethod(  // End
         clazz    = "org.apache.spark.util.collection.ExternalAppendOnlyMap",
         method   = "insertAll",
         location = @Location(value=Kind.RETURN))
     public static void ExternalAppendOnlyMap_insertAll_return() {
-        // time,heap(MB),shuffle,map,end
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,map,end");
+        println(common() + ",shuffle,map,end");
     }
     @OnMethod(  // End
         clazz    = "org.apache.spark.util.collection.ExternalSorter",
         method   = "insertAll",
         location = @Location(value=Kind.RETURN))
     public static void ExternalSorter_insertAll_return() {
-        // time,heap(MB),shuffle,sorter,end
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,sorter,end");
+        println(common() + ",shuffle,sorter,end");
     }
     @OnMethod(  // Spill
         clazz    = "org.apache.spark.util.collection.ExternalAppendOnlyMap",
@@ -103,9 +99,8 @@ public class ExecutorProbe {
     public static void ExternalAppendOnlyMap_spill_entry(AnyType[] args) {
         /* args[0] SizeTracker
          */
-        // time,heap(MB),shuffle,map,spill,size
         org.apache.spark.util.collection.SizeTracker st = (org.apache.spark.util.collection.SizeTracker) args[0];
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,map,spill," + st.estimateSize());
+        println(common() + ",shuffle,map,spill," + st.estimateSize());
     }
     @OnMethod(  // Spill
         clazz    = "org.apache.spark.util.collection.ExternalSorter",
@@ -116,9 +111,8 @@ public class ExecutorProbe {
          * PartitionedPairBuffer extends WritablePartitionedPairCollection with SizeTracker
          * PartitionedSerializedPairBuffer extends WritablePartitionedPairCollection with SizeTracker
          */
-        // time,heap(MB),shuffle,sorter,spill,size
         org.apache.spark.util.collection.SizeTracker st = (org.apache.spark.util.collection.SizeTracker) args[0];
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,sorter,spill," + st.estimateSize());
+        println(common() + ",shuffle,sorter,spill," + st.estimateSize());
     }
     @OnMethod(  // Release
         clazz    = "org.apache.spark.shuffle.ShuffleMemoryManager",
@@ -127,15 +121,13 @@ public class ExecutorProbe {
     public static void ShuffleMemoryManager_release_entry(AnyType[] args) {
         /* args[0] Long numBytes
          */
-        // time,heap(MB),shuffle,manager,release,size
-        println(Sys.VM.vmUptime() + "," + heapUsed() + ",shuffle,manager,release," + args[0]);
+        println(common() + ",shuffle,manager,release," + args[0]);
     }
 
     /* Alarm for Heap Usage */
     @OnTimer(10)
     public static void alarm() {
-        // time,heap(MB)
-        println(Sys.VM.vmUptime() + "," +  heapUsed());
+        println(common());
     }
 
     /* GC */
@@ -183,13 +175,17 @@ public class ExecutorProbe {
         return sb;
     }
 
-    /* The size of used heap of JVM in MB */
-    private static double heapUsed() {
-        double used = heapUsage().getUsed() / 1024.0 / 1024.0;  // MB
-        used = (double)(Math.round(used * 100.0)) / 100.0;
-        return used;
+    private static double convert(long m) {
+        return (double)(Math.round( (m / 1024.0 / 1024.0) * 100.0)) / 100.0;  // B -> MB with double precision
     }
 
+    /* Every event needs to print out this string.
+     * time,heap(MB),nonheap(MB),total(MB) */
+    private static String common() {
+        long heap = heapUsage().getUsed();
+        long nonheap = nonHeapUsage().getUsed();
+        return String.valueOf(Sys.VM.vmUptime()) + "," + String.valueOf(convert(heap)) + "," + String.valueOf(convert(nonheap)) + "," + String.valueOf(convert(heap + nonheap));
+    }
 }
 
 /*
