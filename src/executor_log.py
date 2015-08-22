@@ -3,6 +3,7 @@ import numpy as np
 from termcolor import colored
 
 from event.common import *
+from event.gc import *
 from event.environment import *
 from event.job import *
 from event.stage import *
@@ -11,7 +12,7 @@ from event.persist import *
 from event.shuffle import *
 
 class ExecutorLog:
-    def __init__(self, eventlog_fname, btracelog_fname, num_cores):
+    def __init__(self, eventlog_fname, btracelog_fname):
         self.eventlog_fname = eventlog_fname
         self.btracelog_fname = btracelog_fname
 
@@ -23,7 +24,6 @@ class ExecutorLog:
 
         self.executor_id = None
         self.max_memory = None
-        self.num_cores = num_cores
 
     def parse(self):
         self.parse_eventlog()
@@ -54,17 +54,10 @@ class ExecutorLog:
                 self.executor_id = task.executor_id
                 if lst[common_length+1] == "start":
                     task.start_common = common
-                    task.start_minor_gc_count = long(lst[common_length+3])
-                    task.start_minor_gc_time = long(lst[common_length+4])
-                    task.start_major_gc_count = long(lst[common_length+5])
-                    task.start_major_gc_time = long(lst[common_length+6])
+                    task.start_gc = GC(lst[common_length+3:])
                 elif lst[common_length+1] == "end":
                     task.end_common = common
-                    task.end_minor_gc_count = long(lst[common_length+3])
-                    task.end_minor_gc_time = long(lst[common_length+4])
-                    task.end_major_gc_count = long(lst[common_length+5])
-                    task.end_major_gc_time = long(lst[common_length+6])
-                    task.compute_gc_count_time()
+                    task.end_gc = GC(lst[common_length+3:])
             elif event == "persist":
                 self.persists.append(Persist(common, lst[common_length:]))
             elif event == "shuffle":
@@ -73,6 +66,7 @@ class ExecutorLog:
         self._truncate_duplicate_shuffle_events(temp_shuffles)
 
     def _truncate_duplicate_shuffle_events(self, temp_shuffles):
+        num_dup = 2
         depth = 0
         spill_count = 0
         prev_spill = None
@@ -85,7 +79,7 @@ class ExecutorLog:
                 spill_count += 1
                 if spill_count > 1:
                     assert prev_spill.size == shuffle.size
-                if spill_count == self.num_cores:
+                if spill_count == num_dup:
                     self.shuffles.append(shuffle)
                     spill_count = 0
                 prev_spill = shuffle
@@ -202,7 +196,7 @@ class ExecutorLog:
             print "[ Executor Information ]"
             print "- Executor ID: " + str(self.executor_id)
             print "- Executor Memory = " + self._adjust_size(self.environment.executor_memory)
-            print "- Max Executor Memory Used = " + str(self.max_memory) + "(MB)"
+            print "- Max JVM Memory Used = " + str(self.max_memory) + "(MB)"
             print ""
 
             cinfo = CacheInfo(self.environment.storage_memory, self.persists)
@@ -219,10 +213,8 @@ class ExecutorLog:
                 task = tup[1]
                 break
         print "[ Garbage Collector Information ]"
-        print "- Minor GC Count = " + str(task.end_minor_gc_count)
-        print "- Minor GC Time  = " + str(task.end_minor_gc_time) + "(ms)"
-        print "- Major GC Count = " + str(task.end_major_gc_count)
-        print "- Major GC Time  = " + str(task.end_major_gc_time) + "(ms)"
+        print "- GC Count = " + str(task.end_gc.count)
+        print "- GC Time  = " + str(task.end_gc.time) + "(ms)"
         print "\n"
 
 
@@ -344,7 +336,7 @@ class ExecutorLog:
 
 import sys
 if __name__ == "__main__":
-    el = ExecutorLog(sys.argv[1], sys.argv[2], int(sys.argv[3]))
+    el = ExecutorLog(sys.argv[1], sys.argv[2])
     el.parse()
     el.combine()
 

@@ -2,6 +2,7 @@ import json
 import re
 
 from common import *
+from gc import *
 
 ##
 # Task class comprises information from both Spark's eventlog and btracelog.
@@ -42,19 +43,10 @@ class Task:
 
         # BTrace Information
         self.start_common = None
-        self.start_minor_gc_count = None
-        self.start_minor_gc_time = None
-        self.start_major_gc_count = None
-        self.start_major_gc_time = None
+        self.start_gc = None
         self.end_common = None
-        self.end_minor_gc_count = None
-        self.end_minor_gc_time = None
-        self.end_major_gc_count = None
-        self.end_major_gc_time = None
-        self.minor_gc_count = None
-        self.minor_gc_time = None
-        self.major_gc_count = None
-        self.major_gc_time = None
+        self.end_gc = None
+        self.gc = None
 
 
     def __repr__(self):
@@ -76,8 +68,8 @@ class Task:
                 result += " " + str(self.input_metrics)
                 flag = True
             if self.shuffle_read_metrics != None:
-                if flag: result += ", " + str(self.shuffle_read_metrics)
-                else: result += " " + str(self.shuffle_read_metrics)
+                if flag: result += ","
+                result += " " + str(self.shuffle_read_metrics)
         elif status == "end":
             result += str(self.end_common.time) + "(ms), " + str(self.end_common.total) + "(MB) -- " + self._new_repr(status)
             if self.shuffle_write_metrics != None:
@@ -93,8 +85,8 @@ class Task:
                 result += " " + str(self.input_metrics)
                 flag = True
             if self.shuffle_read_metrics != None:
-                if flag: result += ", " + str(self.shuffle_read_metrics)
-                else: result += " " + str(self.shuffle_read_metrics)
+                if flag: result += ","
+                result += " " + str(self.shuffle_read_metrics)
 
         elif status == "end":
             result += str(self.end_common.time) + "(ms), " + str(self.end_common.total) + "(MB) -- " + self._new_repr(status)
@@ -102,16 +94,12 @@ class Task:
             if self.shuffle_write_metrics != None:
                 result += " " + str(self.shuffle_write_metrics)
                 flag = True
-            if flag: result += ", minor_gc_count: " + str(self.minor_gc_count) + ", minor_gc_time: " + str(self.minor_gc_time)
-            else: result += " minor_gc_count: " + str(self.minor_gc_count) + ", minor_gc_time: " + str(self.minor_gc_time)
-            result += ", major_gc_count: " + str(self.major_gc_count) + ", major_gc_time: " + str(self.major_gc_time)
-        return result
 
-    def compute_gc_count_time(self):
-        self.minor_gc_count = self.end_minor_gc_count - self.start_minor_gc_count
-        self.minor_gc_time = self.end_minor_gc_time - self.start_minor_gc_time
-        self.major_gc_count = self.end_major_gc_count - self.start_major_gc_count
-        self.major_gc_time = self.end_major_gc_time - self.start_major_gc_time
+            gc_count = self.end_gc.count - self.start_gc.count
+            gc_time  = self.end_gc.time  - self.start_gc.time
+            if flag: result += ","
+            result += " gc_count: " + str(gc_count) + ", gc_time: " + str(gc_time)
+        return result
 
     class InputMetrics:
         def __init__(self, j):

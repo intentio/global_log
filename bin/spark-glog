@@ -7,10 +7,9 @@ function usage {
     echo "  - eventlog : Spark's event logfile."
     echo "  - btracelog: Logfile collected from DriverProbe BTrace script."
     echo ""
-    echo "Usage: spark-glog executor [eventlog] [btracelog] [num_cores]"
+    echo "Usage: spark-glog executor [eventlog] [btracelog]"
     echo "  - eventlog : Spark's event logfile."
     echo "  - btracelog: Logfile collected from ExecutorProbe BTrace script."
-    echo "  - num_cores: number of cores given to this executor."
     exit
 }
 
@@ -32,16 +31,14 @@ install python-termcolor
 
 
 
+if [ "$#" -ne 3 ]; then
+    usage
+fi
+
 if [ "$1" == "driver" ]; then
-    if [ "$#" -ne 3 ]; then
-        usage
-    fi
     python "$SPARK_GLOG_HOME"/src/driver_log.py $2 $3
 elif [ "$1" == "executor" ]; then
-    if [ "$#" -ne 4 ]; then
-        usage
-    fi
-    python "$SPARK_GLOG_HOME"/src/executor_log.py $2 $3 $4
+    python "$SPARK_GLOG_HOME"/src/executor_log.py $2 $3
 else
     usage
 fi
