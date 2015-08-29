@@ -7,20 +7,16 @@ from common import *
 # Stage class comprises information from both Spark's eventlog and btracelog.
 ##
 class Stage:
-    def __init__(self, start, end):
+    def __init__(self, start):
         # Eventlog Information
-        assert start["Stage Info"]["Stage ID"] == end["Stage Info"]["Stage ID"]
-        assert start["Stage Info"]["Stage Attempt ID"] == end["Stage Info"]["Stage Attempt ID"]
-        self.stage_id = end["Stage Info"]["Stage ID"]
-        self.stage_attempt_id = end["Stage Info"]["Stage Attempt ID"]
-        self.parent_ids = end["Stage Info"]["Parent IDs"]
-        self.submission_time = end["Stage Info"]["Submission Time"]
-        self.completion_time = end["Stage Info"]["Completion Time"]
-        self.rdds = []
-        for r in end["Stage Info"]["RDD Info"]:
-            rdd = Stage.RDD(r)
-            self.rdds.append(rdd)
-        self.tasks = []
+        self.stage_id = start["Stage Info"]["Stage ID"]
+        self.stage_attempt_id = start["Stage Info"]["Stage Attempt ID"]
+        self.parent_ids = start["Stage Info"]["Parent IDs"]
+        self.submission_time = None
+        self.completion_time = None
+        self.rdds = None
+        self.tasks = {}
+        self.id_sorted_tasks = []
 
         self.total_bytes_cached = 0L
         self.total_records_read = 0L
@@ -29,6 +25,30 @@ class Stage:
         # BTrace Information
         self.start_common = None
         self.end_common = None
+
+    def add_end(self, end):
+        assert self.stage_id == end["Stage Info"]["Stage ID"]
+        assert self.stage_attempt_id == end["Stage Info"]["Stage Attempt ID"]
+        self.submission_time = end["Stage Info"]["Submission Time"]
+        self.completion_time = end["Stage Info"]["Completion Time"]
+        self.rdds = []
+        for r in end["Stage Info"]["RDD Info"]:
+            rdd = Stage.RDD(r)
+            self.rdds.append(rdd)
+        self.get_id_sorted_tasks()
+
+    def get_id_sorted_tasks(self):
+        def _task_id_comp(x, y):
+            c = int(x.task_id) - int(y.task_id)
+            if c < 0: return -1
+            elif c > 0: return 1
+            else:
+                c2 = int(x.task_attempt_id) - int(y.task_attempt_id)
+                if c2 < 0: return -1
+                elif c2 > 0: return 1
+                return 0
+        self.id_sorted_tasks = self.tasks.values()
+        self.id_sorted_tasks.sort(cmp=_task_id_comp)
 
     def __repr__(self):
         result = "[Stage " + str(self.stage_id) + "] "
@@ -57,7 +77,7 @@ class Stage:
             return str(self.end_common.time) + "(ms), " + str(self.end_common.total) + "(MB) -- " + self._new_repr(status)
 
     def compute_total_data_read_cached(self):
-        for task in self.tasks:
+        for task in self.tasks.values():
             if task.input_metrics != None:
                 self.total_records_read += task.input_metrics.records_read
                 self.total_bytes_read += task.input_metrics.bytes_read

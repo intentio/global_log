@@ -36,8 +36,8 @@ class ExecutorLog:
         s = 0
         tasks = {}
         for job in self.jobs:
-            for stage in job.stages:
-                for task in stage.tasks:
+            for stage in job.id_sorted_stages:
+                for task in stage.id_sorted_tasks:
                     tasks[task.task_id] = task
         temp_shuffles = []
         f = open(self.btracelog_fname, "r")
@@ -94,8 +94,8 @@ class ExecutorLog:
         # Collect all the btrace events except periodic alarm function.
         self.time_sorted_combined_events = []
         for job in self.jobs:
-            for stage in job.stages:
-                for task in stage.tasks:
+            for stage in job.id_sorted_stages:
+                for task in stage.id_sorted_tasks:
                     if task.start_common != None and task.end_common != None:
                         self.time_sorted_combined_events.append( (task.start_common.time, task, "start") )
                         self.time_sorted_combined_events.append( (task.end_common.time, task, "end") )
@@ -181,10 +181,10 @@ class ExecutorLog:
     def print_executor_info(self):
         temp = ""
         for job in self.jobs:
-            temp += "Job " + str(job.job_id)
-            for stage in job.stages:
+            temp += "\nJob " + str(job.job_id)
+            for stage in job.id_sorted_stages:
                 temp += "\n  Stage " + str(stage.stage_id) + "\n    Task [ "
-                for task in stage.tasks:
+                for task in stage.id_sorted_tasks:
                     if task.start_common != None and task.end_common != None:
                         temp += str(task.task_id) + ","
                 temp = temp[:-1]
@@ -219,112 +219,52 @@ class ExecutorLog:
 
 
     ####
-    # job_start / job end
-    #   dictionary, where
-    #   - key1: job_id
-    #
-    # stage_submitted / stage_completed
-    #   dictionary of dictionaries, where
-    #   - key1: job_id
-    #   - key2: (stage_id, stage_attempt_id)
-    #
-    # task_start / task_end
-    #   dictionary of dictionaries, where
-    #   - key2: (stage_id, stage_attempt_id)
-    #   - key3: (task_id, task_attempt_id)
-    # 
     # Returns the list of jobs in which each of jobs contains all the
     # stages and tasks that have ran during the job.
     def parse_eventlog(self):
-        job_start = {}
-        job_end = {}
-        stage_submitted = {}
-        stage_completed = {}
-        task_start = {}
-        task_end = {}
         last_job = None
-
-        # Parse eventlogs and put them in separate dictionaries.
         f = open(self.eventlog_fname, "r")
         for line in f.readlines():
             j = json.loads(line)
             if j["Event"] == "SparkListenerEnvironmentUpdate":
                 self.environment = Environment(j)
             elif j["Event"] == "SparkListenerJobStart":
-                key1 = j["Job ID"]
-                job_start[key1] = j
-                last_job = key1
-                stage_submitted[key1] = {}
-                stage_completed[key1] = {}
-                for s in j["Stage Infos"]:
-                    stage_id = s["Stage ID"]
-                    stage_attempt_id = s["Stage Attempt ID"]
-                    key2 = (stage_id, stage_attempt_id)
-                    stage_submitted[key1][key2] = None
-                    stage_completed[key1][key2] = None
+                job = Job(j)
+                last_job = job
             elif j["Event"] == "SparkListenerJobEnd":
-                key1 = j["Job ID"]
-                job_end[key1] = j
+                assert last_job.job_id == j["Job ID"]
+                last_job.add_end(j)
+                self.jobs.append(last_job)
             elif j["Event"] == "SparkListenerStageSubmitted":
-                key1 = last_job
-                assert stage_submitted.has_key(key1)
                 stage_id = j["Stage Info"]["Stage ID"]
                 stage_attempt_id = j["Stage Info"]["Stage Attempt ID"]
-                key2 = (stage_id, stage_attempt_id)
-                assert stage_submitted[key1].has_key(key2)
-                stage_submitted[key1][key2] = j
+                last_job.stages[(stage_id, stage_attempt_id)] = Stage(j)
             elif j["Event"] == "SparkListenerStageCompleted":
-                key1 = last_job
-                assert stage_completed.has_key(key1)
                 stage_id = j["Stage Info"]["Stage ID"]
                 stage_attempt_id = j["Stage Info"]["Stage Attempt ID"]
-                key2 = (stage_id, stage_attempt_id)
-                assert stage_completed[key1].has_key(key2)
-                stage_completed[key1][key2] = j
+                assert last_job.stages.has_key((stage_id, stage_attempt_id))
+                last_job.stages[(stage_id, stage_attempt_id)].add_end(j)
             elif j["Event"] == "SparkListenerTaskStart":
                 stage_id = j["Stage ID"]
                 stage_attempt_id = j["Stage Attempt ID"]
-                key2 = (stage_id, stage_attempt_id)
+                assert last_job.stages.has_key((stage_id, stage_attempt_id))
+                stage = last_job.stages[(stage_id, stage_attempt_id)]
                 task_id = j["Task Info"]["Task ID"]
                 task_attempt_id = j["Task Info"]["Attempt"]
-                key3 = (task_id, task_attempt_id)
-                if not task_start.has_key(key2):
-                    task_start[key2] = {}
-                task_start[key2][key3] = j
+                stage.tasks[(task_id, task_attempt_id)] = Task(j)
             elif j["Event"] == "SparkListenerTaskEnd":
                 stage_id = j["Stage ID"]
                 stage_attempt_id = j["Stage Attempt ID"]
-                key2 = (stage_id, stage_attempt_id)
+                assert last_job.stages.has_key((stage_id, stage_attempt_id))
+                stage = last_job.stages[(stage_id, stage_attempt_id)]
                 task_id = j["Task Info"]["Task ID"]
                 task_attempt_id = j["Task Info"]["Attempt"]
-                key3 = (task_id, task_attempt_id)
-                if not task_end.has_key(key2):
-                    task_end[key2] = {}
-                task_end[key2][key3] = j
-            # Add more "Event" cases here
+                assert stage.tasks.has_key((task_id, task_attempt_id))
+                stage.tasks[(task_id, task_attempt_id)].add_end(j)
         f.close()
-
-        # Combine the dictionaries into list of Jobs, in which each of
-        # Jobs contains according Stages and Tasks.
-        key1s = job_start.keys()
-        key1s.sort()
-        for key1 in key1s:
-            job = Job(job_start[key1], job_end[key1])
-            key2s = stage_submitted[key1].keys()
-            key2s.sort()
-            for key2 in key2s:
-                stage = Stage(stage_submitted[key1][key2], stage_completed[key1][key2])
-                key3s = task_start[key2].keys()
-                key3s.sort()
-                for key3 in key3s:
-                    task = Task(task_start[key2][key3], task_end[key2][key3])
-                    stage.tasks.append(task)
-                job.stages.append(stage)
-            self.jobs.append(job)
-
         # Compute additional stuff for each of Stages.
         for job in self.jobs:
-            for stage in job.stages:
+            for stage in job.stages.values():
                 stage.compute_total_data_read_cached()
 
     def _adjust_size(self, size):

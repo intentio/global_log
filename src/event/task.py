@@ -8,29 +8,41 @@ from gc import *
 # Task class comprises information from both Spark's eventlog and btracelog.
 ##
 class Task:
-    def __init__(self, start, end):
+    def __init__(self, start):
         # Eventlog Information
-        assert start["Stage ID"] == end["Stage ID"]
-        assert start["Stage Attempt ID"] == end["Stage Attempt ID"]
-        assert start["Task Info"]["Task ID"] == end["Task Info"]["Task ID"]
-        assert start["Task Info"]["Attempt"] == end["Task Info"]["Attempt"]
-        self.stage_id = end["Stage ID"]
-        self.stage_attempt_id = end["Stage Attempt ID"]
-        self.task_id = end["Task Info"]["Task ID"]
-        self.task_attempt_id = end["Task Info"]["Attempt"]
-        self.partition_index = end["Task Info"]["Index"]
-        self.executor_id = end["Task Info"]["Executor ID"]
-        self.host = end["Task Info"]["Host"]
+        self.stage_id = start["Stage ID"]
+        self.stage_attempt_id = start["Stage Attempt ID"]
+        self.task_id = start["Task Info"]["Task ID"]
+        self.task_attempt_id = start["Task Info"]["Attempt"]
+        self.partition_index = start["Task Info"]["Index"]
+        self.executor_id = start["Task Info"]["Executor ID"]
+        self.host = start["Task Info"]["Host"]
         self.input_metrics = None
+        self.output_metrics = None
+        self.shuffle_write_metrics = None
+        self.shuffle_read_metrics = None
+        self.updated_blocks = None
+        self.launch_time = None
+        self.finish_time = None
+
+        # BTrace Information
+        self.start_common = None
+        self.start_gc = None
+        self.end_common = None
+        self.end_gc = None
+        self.gc = None
+
+    def add_end(self, end):
+        assert self.stage_id == end["Stage ID"]
+        assert self.stage_attempt_id == end["Stage Attempt ID"]
+        assert self.task_id == end["Task Info"]["Task ID"]
+        assert self.task_attempt_id == end["Task Info"]["Attempt"]
         if "Input Metrics" in end["Task Metrics"]:
             self.input_metrics = self.InputMetrics(end["Task Metrics"]["Input Metrics"])
-        self.output_metrics = None
         if "Output Metrics" in end["Task Metrics"]:
             self.output_metrics = self.OutputMetrics(end["Task Metrics"]["Output Metrics"])
-        self.shuffle_write_metrics = None
         if "Shuffle Write Metrics" in end["Task Metrics"]:
             self.shuffle_write_metrics = self.ShuffleWriteMetrics(end["Task Metrics"]["Shuffle Write Metrics"])
-        self.shuffle_read_metrics = None
         if "Shuffle Read Metrics" in end["Task Metrics"]:
             self.shuffle_read_metrics = self.ShuffleReadMetrics(end["Task Metrics"]["Shuffle Read Metrics"])
         self.updated_blocks = []
@@ -40,14 +52,6 @@ class Task:
                 self.updated_blocks.append(block)
         self.launch_time = end["Task Info"]["Launch Time"]
         self.finish_time = end["Task Info"]["Finish Time"]
-
-        # BTrace Information
-        self.start_common = None
-        self.start_gc = None
-        self.end_common = None
-        self.end_gc = None
-        self.gc = None
-
 
     def __repr__(self):
         return "[Task " + str(self.task_id) + "]"
@@ -147,9 +151,7 @@ class Task:
 
     class Block:
         def __init__(self, j):
-            self.block_id = j["Block ID"]  # "rdd_2_0"
-            self.rdd_id = self.block_id.split("_")[1]
-            self.partition_index = self.block_id.split("_")[2]
+            self.block_id = j["Block ID"]  # "rdd_2_0" or "broadcast_1"
             self.storage_level = Task.StorageLevel(j["Status"]["Storage Level"])
             self.disk_size = j["Status"]["Disk Size"]
             self.memory_size = j["Status"]["Memory Size"]
