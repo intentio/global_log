@@ -66,7 +66,7 @@ class Task:
     def get_driver_text(self, status):
         result = ""
         if status == "start":
-            result += str(self.start_common.time) + "(ms), " + str(self.start_common.heap) + "(MB) -- " + self._new_repr(status)
+            result += str(self.start_common.time) + "(ms), " + str(self.start_common.total) + "(MB), " + str(self.start_common.pcpu) + " -- " + self._new_repr(status)
             flag = False
             if self.input_metrics != None:
                 result += " " + str(self.input_metrics)
@@ -75,15 +75,16 @@ class Task:
                 if flag: result += ","
                 result += " " + str(self.shuffle_read_metrics)
         elif status == "end":
-            result += str(self.end_common.time) + "(ms), " + str(self.end_common.total) + "(MB) -- " + self._new_repr(status)
+            result += str(self.start_common.time) + "(ms), " + str(self.start_common.total) + "(MB), " + str(self.start_common.pcpu) + " -- " + self._new_repr(status)
             if self.shuffle_write_metrics != None:
                 result += " " + str(self.shuffle_write_metrics)
         return result
 
+
     def get_executor_text(self, status):
         result = ""
         if status == "start":
-            result += str(self.start_common.time) + "(ms), " + str(self.start_common.heap) + "(MB) -- " + self._new_repr(status)
+            result += str(self.start_common.time) + "(ms), " + str(self.start_common.total) + "(MB), " + str(self.start_common.pcpu) + " -- " + self._new_repr(status)
             flag = False
             if self.input_metrics != None:
                 result += " " + str(self.input_metrics)
@@ -93,7 +94,7 @@ class Task:
                 result += " " + str(self.shuffle_read_metrics)
 
         elif status == "end":
-            result += str(self.end_common.time) + "(ms), " + str(self.end_common.total) + "(MB) -- " + self._new_repr(status)
+            result += str(self.start_common.time) + "(ms), " + str(self.start_common.total) + "(MB), " + str(self.start_common.pcpu) + " -- " + self._new_repr(status)
             flag = False
             if self.shuffle_write_metrics != None:
                 result += " " + str(self.shuffle_write_metrics)

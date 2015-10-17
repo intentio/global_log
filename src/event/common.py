@@ -4,3 +4,5 @@ class Common:
         self.heap = float(args[1])  # jvm heap used (MB)
         self.nonheap = float(args[2])  # jvm nonheap used (MB)
         self.total = float(args[3])  # heap + nonheap (MB)
+        self.pcpu = float(args[4])  # jvm cpu load
+        self.scpu = float(args[5])  # system cpu load

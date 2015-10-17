@@ -50,6 +50,12 @@ class Job:
 
     def get_driver_text(self, status):
         if status == "start":
-            return str(self.start_common.time) + "(ms), " + str(self.start_common.total) + "(MB) -- " + self._new_repr(status)
+            return str(self.start_common.time) + "(ms), " + \
+                    str(self.start_common.total) + "(MB), " + \
+                    str(self.start_common.pcpu) + \
+                    " -- " + self._new_repr(status)
         elif status == "end":
-            return str(self.end_common.time) + "(ms), " + str(self.end_common.total) + "(MB) -- " + self._new_repr(status)
+            return str(self.end_common.time) + "(ms), " + \
+                    str(self.end_common.total) + "(MB), " + \
+                    str(self.end_common.pcpu) + \
+                    " -- " + self._new_repr(status)

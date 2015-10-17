@@ -15,10 +15,13 @@ class Persist:
         return "[Persist " + str(self.storage) + "] " + _adjust_size(self.size)
 
     def get_driver_text(self):
-        return str(self.common.time) + "(ms), " + str(self.common.total) + "(MB) -- " + str(self)
+        return str(self.common.time) + "(ms), " + \
+                str(self.common.total) + "(MB), " + \
+                str(self.common.pcpu) + \
+                " -- " + str(self)
 
     def get_executor_text(self):
-        return str(self.common.time) + "(ms), " + str(self.common.total) + "(MB) -- " + str(self)
+        return self.get_driver_text()
 
 class CacheInfo:
     def __init__(self, storage_memory, persist_events):

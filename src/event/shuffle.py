@@ -23,7 +23,10 @@ class Shuffle:
         return result
 
     def get_executor_text(self):
-        return str(self.common.time) + "(ms), " + str(self.common.total) + "(MB) -- " + str(self)
+        return str(self.common.time) + "(ms), " + \
+                str(self.common.total) + "(MB), " + \
+                str(self.common.pcpu) + \
+                " -- " + str(self)
 
 ##
 # ShuffleInfo class combines shuffle events and divide them into shuffle

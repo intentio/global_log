@@ -4,13 +4,24 @@ import static com.sun.btrace.BTraceUtils.*;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.GarbageCollectorMXBean;
+import com.sun.management.OperatingSystemMXBean;
+
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
 
 /**
+ * Alarm
+ * - Common
+ *
  * Common
- * - time(ms),heap(MB),nonheap(MB),total(MB)
+ * - time(ms),Memory,CPU
+ *
+ * Memory
+ * - heap(MB),nonheap(MB),total(MB)
+ *
+ * CPU
+ * - systemCpuLoad,processCpuLoad
  *
  * Task start/end
  * - Common,task,start,taskId,GC
@@ -27,9 +38,6 @@ import java.util.List;
  * - Common,shuffle,map,spill,size(B)
  * - Common,shuffle,sorter,spill,size(B)
  * - Common,shuffle,manager,release,size(B)
- *
- * Alarm
- * - Common
  *
  * GC
  * - count,time(ms)
@@ -124,7 +132,7 @@ public class ExecutorProbe {
         println(getCommon() + ",shuffle,manager,release," + args[0]);
     }
 
-    /* Alarm for Heap Usage */
+    /* Alarm */
     @OnTimer(10)
     public static void alarm() {
         println(getCommon());
@@ -154,19 +162,35 @@ public class ExecutorProbe {
         return sb;
     }
 
+    /* Every event needs to print out this string. */
+    private static String getCommon() {
+        return String.valueOf(Sys.VM.vmUptime()) + "," + getMemory() + "," + getCpu();
+    }
+
+    /* Memory */
+    private static String getMemory() {
+        long heap = heapUsage().getUsed();
+        long nonheap = nonHeapUsage().getUsed();
+        return String.valueOf(convert(heap)) + "," 
+            + String.valueOf(convert(nonheap)) + "," 
+            + String.valueOf(convert(heap + nonheap));
+    }
+
     private static double convert(long m) {
         return (double)(Math.round( (m / 1024.0 / 1024.0) * 100.0 )) / 100.0;  // B -> MB with double precision
     }
 
-    /* Every event needs to print out this string.
-     * time,heap(MB),nonheap(MB),total(MB) */
-    private static String getCommon() {
-        long heap = heapUsage().getUsed();
-        long nonheap = nonHeapUsage().getUsed();
-        return String.valueOf(Sys.VM.vmUptime()) + "," + String.valueOf(convert(heap)) + "," + String.valueOf(convert(nonheap)) + "," + String.valueOf(convert(heap + nonheap));
+    /* CPU
+     * getProcessCpuLoad() - returns the "recent cpu usage" for the Java Virtual Machine process. [0,1]
+     * getSystemCpuLoad()  - returns the "recent cpu usage" for the whole system. [0,1] */
+    private static String getCpu() {
+        OperatingSystemMXBean osMXBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+        double p = osMXBean.getProcessCpuLoad();
+        double s = osMXBean.getSystemCpuLoad();
+        return String.format("%.2f", p) + "," + String.format("%.2f", s);
     }
 }
 
 /*
-btracec -cp "$SPARK_HOME/lib/spark-assembly-1.4.0-hadoop2.6.0.jar:$SCALA_HOME/lib/scala-library.jar" ExecutorProbe.java
+btracec -cp "$SPARK_HOME/lib/spark-assembly-1.5.1-hadoop2.6.0.jar:$SCALA_HOME/lib/scala-library.jar" ExecutorProbe.java
 */
