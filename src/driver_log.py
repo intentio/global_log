@@ -18,6 +18,8 @@ class DriverLog:
         self.persists = []
         self.time_sorted_combined_events = []
         self.max_memory = None
+        self.time_xmax = None
+        self.avg_cpu_load = None
 
 
     def run(self):
@@ -177,23 +179,26 @@ class DriverLog:
                 if isinstance(y[1], Stage) and isinstance(x[1], Job): return 1
                 return 0
         self.time_sorted_combined_events.sort(cmp=_comp)
+        self.time_xmax = self.time_sorted_combined_events[-1][0]
 
 
     def plot(self):
         time, memory, cpu = np.loadtxt(self.btracelog_fname, unpack=True, delimiter=",", usecols=(0,3,4))
 
         fig = plt.figure()
-        time_memory = fig.add_subplot(211)
+        time_memory = fig.add_subplot(211, xlim=(0,self.time_xmax + time[-1]/20))
         time_memory.plot(time, memory)
         time_memory.set_xlabel("Time (ms)")
         time_memory.set_ylabel("JVM Memory Used (MB)")
         self.max_memory = max(memory)
         time_memory.text(0.05, 0.95, "Max JVM Memory Used = " + str(self.max_memory) + " (MB)", transform=time_memory.transAxes, verticalalignment='top')
 
-        time_cpu = fig.add_subplot(212)
+        time_cpu = fig.add_subplot(212, xlim=(0,self.time_xmax + time[-1]/20))
         time_cpu.plot(time, cpu, 'k')
         time_cpu.set_xlabel("Time (ms)")
         time_cpu.set_ylabel("JVM CPU Load")
+        self.avg_cpu_load = sum(cpu) / len(cpu)
+        time_cpu.text(0.05, 0.95, "Avg JVM CPU Load = " + str(self.avg_cpu_load), transform=time_cpu.transAxes, verticalalignment='top')
 
         x = [tup[0] for tup in self.time_sorted_combined_events]  # event time list
         y = []  # event memory list

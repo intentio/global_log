@@ -23,6 +23,7 @@ class ExecutorLog:
         self.executor_id = None
         self.max_memory = None
         self.time_xmax = None
+        self.avg_cpu_load = None
 
 
     def run(self):
