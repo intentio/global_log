@@ -20,9 +20,11 @@ class DriverLog:
         self.max_memory = None
         self.time_xmax = None
         self.avg_cpu_load = None
+        self.name = ""
 
 
-    def run(self):
+    def run(self, name):
+        self.name = name
         # parse logs
         self.parse()
         # combine parsed logs
@@ -191,14 +193,15 @@ class DriverLog:
         time_memory.set_xlabel("Time (ms)")
         time_memory.set_ylabel("JVM Memory Used (MB)")
         self.max_memory = max(memory)
-        time_memory.text(0.05, 0.95, "Max JVM Memory Used = " + str(self.max_memory) + " (MB)", transform=time_memory.transAxes, verticalalignment='top')
+        time_memory.text(0.05, 0.95, self.name, transform=time_memory.transAxes, verticalalignment='top')
+        time_memory.text(0.80, 0.95, "Max JVM Memory Used = " + str(self.max_memory) + " (MB)", transform=time_memory.transAxes, verticalalignment='top')
 
         time_cpu = fig.add_subplot(212, xlim=(0,self.time_xmax + time[-1]/20))
         time_cpu.plot(time, cpu, 'k')
         time_cpu.set_xlabel("Time (ms)")
         time_cpu.set_ylabel("JVM CPU Load")
         self.avg_cpu_load = sum(cpu) / len(cpu)
-        time_cpu.text(0.05, 0.95, "Avg JVM CPU Load = " + str(self.avg_cpu_load), transform=time_cpu.transAxes, verticalalignment='top')
+        time_cpu.text(0.80, 0.95, "Avg JVM CPU Load = " + str(self.avg_cpu_load), transform=time_cpu.transAxes, verticalalignment='top')
 
         x = [tup[0] for tup in self.time_sorted_combined_events]  # event time list
         y = []  # event memory list
@@ -284,4 +287,4 @@ class DriverLog:
 import sys
 if __name__ == "__main__":
     dl = DriverLog(sys.argv[1], sys.argv[2])
-    dl.run()
+    dl.run("Driver")

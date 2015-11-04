@@ -10,6 +10,9 @@ function usage {
     echo "Usage: spark-glog executor [eventlog] [btracelog]"
     echo "  - eventlog : Spark's event logfile."
     echo "  - btracelog: Logfile collected from ExecutorProbe BTrace script."
+    echo ""
+    echo "Usage: spark-glog dir [directory]"
+    echo "  - directory: A directory containing logs in a specific structure."
     exit
 }
 
@@ -31,14 +34,16 @@ install python-termcolor
 
 
 
-if [ "$#" -ne 3 ]; then
-    usage
-fi
+#if [ "$#" -ne 3 ]; then
+#    usage
+#fi
 
 if [ "$1" == "driver" ]; then
     python "$SPARK_GLOG_HOME"/src/driver_log.py $2 $3
 elif [ "$1" == "executor" ]; then
     python "$SPARK_GLOG_HOME"/src/executor_log.py $2 $3
+elif [ "$1" == "dir" ]; then
+    python "$SPARK_GLOG_HOME"/src/directory.py $2
 else
     usage
 fi
