@@ -21,6 +21,8 @@ class DriverLog:
         self.time_xmax = None
         self.avg_cpu_load = None
         self.name = ""
+        self.app_start = None
+        self.app_end = None
 
 
     def run(self, name):
@@ -36,6 +38,8 @@ class DriverLog:
         print colored("Red   ", 'red') + ": Task"
         print colored("Blue  ", 'blue') + ": Persist\n"
         self.print_driver_info()
+        print "[ Application Run Time ]"
+        print "- " + str(self.app_end - self.app_start) + "(ms)"
         self.plot()
 
 
@@ -54,6 +58,10 @@ class DriverLog:
             j = json.loads(line)
             if j["Event"] == "SparkListenerEnvironmentUpdate":
                 self.environment = Environment(j)
+            elif j["Event"] == "SparkListenerApplicationStart":
+                self.app_start = j["Timestamp"]
+            elif j["Event"] == "SparkListenerApplicationEnd":
+                self.app_end = j["Timestamp"]
             elif j["Event"] == "SparkListenerJobStart":
                 job = Job(j)
                 last_job = job
